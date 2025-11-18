@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.telemetry.event.hub.HubEvent;
 import ru.practicum.telemetry.event.sensor.SensorEvent;
 import ru.practicum.telemetry.service.CollectorService;
 
@@ -23,7 +24,7 @@ public class CollectorController {
     }
 
     @PostMapping("/hubs")
-    public void recordHubEvent() {
+    public void recordHubEvent(@Valid @RequestBody HubEvent event) {
 
     }
 }
