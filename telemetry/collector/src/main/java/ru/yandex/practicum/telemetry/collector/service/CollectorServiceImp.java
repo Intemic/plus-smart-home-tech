@@ -4,11 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.telemetry.collector.config.KafkaClient;
 import ru.yandex.practicum.telemetry.collector.dto.hub.HubEvent;
 import ru.yandex.practicum.telemetry.collector.dto.sensor.SensorEvent;
+import ru.yandex.practicum.telemetry.collector.service.handler.HubEventHandler;
+import ru.yandex.practicum.telemetry.collector.service.handler.sensor.SensorEventHandler;
 import ru.yandex.practicum.telemetry.collector.utill.HubEventType;
 import ru.yandex.practicum.telemetry.collector.utill.SensorEventType;
 

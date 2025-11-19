@@ -1,4 +1,4 @@
-package ru.yandex.practicum.telemetry.collector.service;
+package ru.yandex.practicum.telemetry.collector.service.handler;
 
 import ru.yandex.practicum.telemetry.collector.dto.hub.HubEvent;
 import ru.yandex.practicum.telemetry.collector.utill.HubEventType;
