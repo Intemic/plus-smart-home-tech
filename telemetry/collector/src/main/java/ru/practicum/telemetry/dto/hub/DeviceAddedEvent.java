@@ -1,20 +1,24 @@
-package ru.practicum.telemetry.event.hub;
+package ru.practicum.telemetry.dto.hub;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import ru.practicum.telemetry.utill.DeviceType;
 import ru.practicum.telemetry.utill.HubEventType;
 
 @Getter
 @Setter
 @ToString(callSuper = true)
-public class DeviceRemovedEvent extends HubEvent {
+public class DeviceAddedEvent extends HubEvent {
     @NotBlank
     private String id;
+    @NotNull
+    private DeviceType deviceType;
 
     @Override
     public HubEventType getType() {
-        return HubEventType.DEVICE_REMOVED;
+        return HubEventType.DEVICE_ADDED;
     }
 }

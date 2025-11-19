@@ -1,4 +1,4 @@
-package ru.practicum.telemetry.event.sensor;
+package ru.practicum.telemetry.dto.sensor;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -9,16 +9,14 @@ import ru.practicum.telemetry.utill.SensorEventType;
 @Getter
 @Setter
 @ToString(callSuper = true)
-public class MotionSensorEvent extends SensorEvent {
+public class TemperatureSensorEvent extends SensorEvent{
     @NotNull
-    private Integer linkQuality;
+    private Integer temperatureC;
     @NotNull
-    private Boolean motion;
-    @NotNull
-    private Integer voltage;
+    private Integer temperatureF;
 
     @Override
     public SensorEventType getType() {
-        return SensorEventType.MOTION_SENSOR_EVENT;
+        return SensorEventType.TEMPERATURE_SENSOR_EVENT;
     }
 }

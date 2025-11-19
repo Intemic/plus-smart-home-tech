@@ -1,4 +1,4 @@
-package ru.practicum.telemetry.event.sensor;
+package ru.practicum.telemetry.dto.sensor;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

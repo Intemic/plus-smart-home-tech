@@ -1,4 +1,4 @@
-package ru.practicum.telemetry.event.hub;
+package ru.practicum.telemetry.dto.hub;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

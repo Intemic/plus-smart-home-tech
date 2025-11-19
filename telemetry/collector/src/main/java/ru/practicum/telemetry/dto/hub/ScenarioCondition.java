@@ -1,4 +1,4 @@
-package ru.practicum.telemetry.event.hub;
+package ru.practicum.telemetry.dto.hub;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
