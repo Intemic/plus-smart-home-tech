@@ -2,31 +2,46 @@ package ru.yandex.practicum.telemetry.collector.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
+import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.telemetry.collector.config.KafkaClient;
 import ru.yandex.practicum.telemetry.collector.dto.hub.HubEvent;
 import ru.yandex.practicum.telemetry.collector.dto.sensor.SensorEvent;
-import ru.yandex.practicum.telemetry.collector.service.handler.HubEventHandler;
+import ru.yandex.practicum.telemetry.collector.service.handler.hub.HubEventHandler;
+import ru.yandex.practicum.telemetry.collector.service.handler.hub.HubEventHandlerFactory;
 import ru.yandex.practicum.telemetry.collector.service.handler.sensor.SensorEventHandler;
+import ru.yandex.practicum.telemetry.collector.service.handler.sensor.SensorEventHandlerFactory;
 import ru.yandex.practicum.telemetry.collector.utill.HubEventType;
 import ru.yandex.practicum.telemetry.collector.utill.SensorEventType;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class CollectorServiceImp implements CollectorService {
     private final KafkaClient kafkaClient;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final Map<SensorEventType, SensorEventHandler> sensorEventHandlerMap = new HashMap<>();
-    private final Map<HubEventType, HubEventHandler> hubEventHandlerMap = new HashMap<>();
+    private Map<SensorEventType, SensorEventHandler> sensorEventHandlerMap;
+    private Map<HubEventType, HubEventHandler> hubEventHandlerMap;
 
-//    public CollectorServiceImp(@Autowired KafkaClient kafkaClient,
-//                               List<>)
+    public CollectorServiceImp(@Autowired KafkaClient kafkaClient,
+                               @Autowired SensorEventHandlerFactory sensorFactory,
+                               @Autowired HubEventHandlerFactory hubFactory) {
+        this.kafkaClient = kafkaClient;
+        setHandlers(sensorFactory.getHandlers(), hubFactory.getHandlers());
+    }
+
+    private void setHandlers(List<SensorEventHandler> sensorHandlers, List<HubEventHandler> hubHandlers) {
+        sensorEventHandlerMap = sensorHandlers.stream()
+                .collect(Collectors.toMap(SensorEventHandler::getEventType, Function.identity()));
+        hubEventHandlerMap = hubHandlers.stream()
+                .collect(Collectors.toMap(HubEventHandler::getEventType, Function.identity()));
+    }
 
     @Override
     public void recordSenorEvent(SensorEvent event) {
@@ -38,7 +53,7 @@ public class CollectorServiceImp implements CollectorService {
 
         SensorEventHandler eventHandler = sensorEventHandlerMap.get(event.getType());
         if (eventHandler == null)
-            throw new IllegalArgumentException("Не наден обработчик события для - %s".formatted(event.getType()));
+            throw new IllegalArgumentException("Не найден обработчик события для - %s".formatted(event.getType()));
 
         eventHandler.handle(event);
     }
@@ -53,8 +68,13 @@ public class CollectorServiceImp implements CollectorService {
 
         HubEventHandler eventHandler = hubEventHandlerMap.get(event.getType());
         if (eventHandler == null)
-            throw new IllegalArgumentException("Не наден обработчик события для - %s".formatted(event.getType()));
+            throw new IllegalArgumentException("Не найден обработчик события для - %s".formatted(event.getType()));
 
         eventHandler.handle(event);
+    }
+
+    @PreDestroy
+    public void stop() {
+        kafkaClient.stop();
     }
 }
