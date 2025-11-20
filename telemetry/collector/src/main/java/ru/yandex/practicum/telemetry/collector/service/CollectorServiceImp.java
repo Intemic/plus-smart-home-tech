@@ -25,14 +25,16 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CollectorServiceImp implements CollectorService {
     private final KafkaClient kafkaClient;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
     private Map<SensorEventType, SensorEventHandler> sensorEventHandlerMap;
     private Map<HubEventType, HubEventHandler> hubEventHandlerMap;
 
     public CollectorServiceImp(@Autowired KafkaClient kafkaClient,
+                               @Autowired ObjectMapper objectMapper,
                                @Autowired SensorEventHandlerFactory sensorFactory,
                                @Autowired HubEventHandlerFactory hubFactory) {
         this.kafkaClient = kafkaClient;
+        this.objectMapper = objectMapper;
         setHandlers(sensorFactory.getHandlers(), hubFactory.getHandlers());
     }
 
@@ -46,7 +48,7 @@ public class CollectorServiceImp implements CollectorService {
     @Override
     public void recordSenorEvent(SensorEvent event) {
         try {
-            log.info(objectMapper.writeValueAsString(event));
+            log.info("Полученное значение - %s".formatted(objectMapper.writeValueAsString(event)));
         } catch (JsonProcessingException e) {
             log.info("Не удалось преобразовать в JSON объект %s".formatted(event));
         }
@@ -61,7 +63,7 @@ public class CollectorServiceImp implements CollectorService {
     @Override
     public void recordHubEvent(HubEvent event) {
         try {
-            log.info(objectMapper.writeValueAsString(event));
+            log.info("Полученное значение - %s".formatted(objectMapper.writeValueAsString(event)));
         } catch (JsonProcessingException e) {
             log.info("Не удалось преобразовать в JSON объект %s".formatted(event));
         }

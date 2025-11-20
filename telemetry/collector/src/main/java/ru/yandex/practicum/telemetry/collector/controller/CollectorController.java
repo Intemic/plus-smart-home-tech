@@ -16,7 +16,7 @@ import ru.yandex.practicum.telemetry.collector.service.CollectorService;
 public class CollectorController {
     private final CollectorService collectorService;
 
-    @PostMapping("/sensor")
+    @PostMapping("/sensors")
     @ResponseStatus(HttpStatus.CREATED)
     public void recordSenorEvent(@Valid @RequestBody SensorEvent event) {
         collectorService.recordSenorEvent(event);

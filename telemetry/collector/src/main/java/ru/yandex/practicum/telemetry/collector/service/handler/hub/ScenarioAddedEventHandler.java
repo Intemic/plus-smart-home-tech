@@ -60,6 +60,7 @@ public class ScenarioAddedEventHandler extends HubEventHandler {
                         .setSensorId(condition.getSensorId())
                         .setType(convertTypeCondition(condition.getType()))
                         .setOperation(convertOperation(condition.getOperation()))
+                        .setValue(condition.getValue())
                         .build())
                 .toList();
         List<DeviceActionAvro> actionsAvro = hubEvent.getActions()

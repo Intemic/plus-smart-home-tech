@@ -1,5 +1,6 @@
 package ru.yandex.practicum.telemetry.collector.service.handler.hub;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -8,6 +9,7 @@ import ru.yandex.practicum.telemetry.collector.config.TelemetryTopics;
 import ru.yandex.practicum.telemetry.collector.dto.hub.HubEvent;
 import ru.yandex.practicum.telemetry.collector.utill.HubEventType;
 
+@Slf4j
 public abstract class HubEventHandler {
     private final Producer<String, SpecificRecordBase> producer;
 
@@ -16,8 +18,10 @@ public abstract class HubEventHandler {
     }
 
     protected <T> void sendEvent(HubEvent event, T payload) {
+        HubEventAvro hubEventAvro = makeEventAvro(event, payload);
+        log.info("Значение для отправки - %s".formatted(hubEventAvro.toString()));
         ProducerRecord<String, SpecificRecordBase> record =
-                new ProducerRecord<>(TelemetryTopics.HUB_TOPIC_V1, makeEventAvro(event, payload));
+                new ProducerRecord<>(TelemetryTopics.HUB_TOPIC_V1, hubEventAvro);
         producer.send(record);
     }
 
