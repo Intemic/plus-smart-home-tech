@@ -19,7 +19,7 @@ public class SwitchEventHandler extends SensorEventHandler {
 
     @Override
     public void handle(SensorEvent event) {
-        SwitchSensorEvent sensorEvent = (SwitchSensorEvent)event;
+        SwitchSensorEvent sensorEvent = (SwitchSensorEvent) event;
         SwitchSensorEventAvro payload = SwitchSensorEventAvro
                 .newBuilder()
                 .setState(sensorEvent.getState())

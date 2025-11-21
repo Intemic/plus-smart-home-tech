@@ -19,7 +19,7 @@ public class TemperatureEventHandler extends SensorEventHandler {
 
     @Override
     public void handle(SensorEvent event) {
-        TemperatureSensorEvent sensorEvent = (TemperatureSensorEvent)event;
+        TemperatureSensorEvent sensorEvent = (TemperatureSensorEvent) event;
         TemperatureSensorEventAvro payload = TemperatureSensorEventAvro
                 .newBuilder()
                 .setTemperatureC(sensorEvent.getTemperatureC())

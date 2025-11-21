@@ -55,7 +55,7 @@ public class ScenarioAddedEventHandler extends HubEventHandler {
         ScenarioAddedEvent hubEvent = (ScenarioAddedEvent) event;
         List<ScenarioConditionAvro> conditionsAvro = hubEvent.getConditions()
                 .stream()
-                .map( condition -> ScenarioConditionAvro
+                .map(condition -> ScenarioConditionAvro
                         .newBuilder()
                         .setSensorId(condition.getSensorId())
                         .setType(convertTypeCondition(condition.getType()))
@@ -65,12 +65,12 @@ public class ScenarioAddedEventHandler extends HubEventHandler {
                 .toList();
         List<DeviceActionAvro> actionsAvro = hubEvent.getActions()
                 .stream()
-                .map( action -> DeviceActionAvro
+                .map(action -> DeviceActionAvro
                         .newBuilder()
                         .setSensorId(action.getSensorId())
                         .setType(convertAction(action.getType()))
                         .setValue(action.getValue())
-                        .build() )
+                        .build())
                 .toList();
         ScenarioAddedEventAvro payload = ScenarioAddedEventAvro
                 .newBuilder()

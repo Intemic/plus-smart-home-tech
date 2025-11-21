@@ -7,7 +7,7 @@ import ru.yandex.practicum.telemetry.collector.dto.sensor.ClimateSensorEvent;
 import ru.yandex.practicum.telemetry.collector.dto.sensor.SensorEvent;
 import ru.yandex.practicum.telemetry.collector.utill.SensorEventType;
 
-public class ClimateEventHandler extends SensorEventHandler{
+public class ClimateEventHandler extends SensorEventHandler {
     public ClimateEventHandler(Producer<String, SpecificRecordBase> producer) {
         super(producer);
     }
@@ -19,7 +19,7 @@ public class ClimateEventHandler extends SensorEventHandler{
 
     @Override
     public void handle(SensorEvent event) {
-        ClimateSensorEvent sensorEvent = (ClimateSensorEvent)event;
+        ClimateSensorEvent sensorEvent = (ClimateSensorEvent) event;
         ClimateSensorEventAvro payload = ClimateSensorEventAvro
                 .newBuilder()
                 .setTemperatureC(sensorEvent.getTemperatureC())

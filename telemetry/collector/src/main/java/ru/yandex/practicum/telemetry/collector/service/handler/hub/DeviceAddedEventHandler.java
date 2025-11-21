@@ -9,7 +9,7 @@ import ru.yandex.practicum.telemetry.collector.dto.hub.HubEvent;
 import ru.yandex.practicum.telemetry.collector.utill.DeviceType;
 import ru.yandex.practicum.telemetry.collector.utill.HubEventType;
 
-public class DeviceAddedEventHandler extends HubEventHandler{
+public class DeviceAddedEventHandler extends HubEventHandler {
     public DeviceAddedEventHandler(Producer<String, SpecificRecordBase> producer) {
         super(producer);
     }
@@ -31,7 +31,7 @@ public class DeviceAddedEventHandler extends HubEventHandler{
 
     @Override
     public void handle(HubEvent event) {
-        DeviceAddedEvent hubEvent = (DeviceAddedEvent)event;
+        DeviceAddedEvent hubEvent = (DeviceAddedEvent) event;
         DeviceAddedEventAvro payload = DeviceAddedEventAvro
                 .newBuilder()
                 .setId(hubEvent.getId())

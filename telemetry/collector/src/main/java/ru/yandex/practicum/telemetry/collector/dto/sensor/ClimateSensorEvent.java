@@ -9,7 +9,7 @@ import ru.yandex.practicum.telemetry.collector.utill.SensorEventType;
 @Getter
 @Setter
 @ToString(callSuper = true)
-public class ClimateSensorEvent extends SensorEvent{
+public class ClimateSensorEvent extends SensorEvent {
     @NotNull
     private Integer temperatureC;
     @NotNull

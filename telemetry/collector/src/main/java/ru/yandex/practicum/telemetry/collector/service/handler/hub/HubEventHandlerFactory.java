@@ -35,7 +35,7 @@ public class HubEventHandlerFactory {
 
     public List<HubEventHandler> getHandlers() {
         return hubClasses.stream()
-                .map( handlerClass -> create(handlerClass))
+                .map(handlerClass -> create(handlerClass))
                 .toList();
     }
 }
