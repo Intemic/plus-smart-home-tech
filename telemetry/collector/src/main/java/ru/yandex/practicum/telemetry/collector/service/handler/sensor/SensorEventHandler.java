@@ -5,23 +5,26 @@ import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
-import ru.yandex.practicum.telemetry.collector.config.TelemetryTopics;
+import ru.yandex.practicum.telemetry.collector.config.CollectorConfig;
 import ru.yandex.practicum.telemetry.collector.dto.sensor.SensorEvent;
 import ru.yandex.practicum.telemetry.collector.utill.SensorEventType;
 
 @Slf4j
 public abstract class SensorEventHandler {
     private final Producer<String, SpecificRecordBase> producer;
+    private final CollectorConfig config;
 
-    public SensorEventHandler(Producer<String, SpecificRecordBase> producer) {
+    public SensorEventHandler(Producer<String, SpecificRecordBase> producer,
+                              CollectorConfig config) {
         this.producer = producer;
+        this.config = config;
     }
 
     protected <T> void sendEvent(SensorEvent event, T payload) {
         SensorEventAvro sensorEventAvro = makeEventAvro(event, payload);
         log.info("Значение для отправки - %s".formatted(sensorEventAvro.toString()));
         ProducerRecord<String, SpecificRecordBase> record =
-                new ProducerRecord<>(TelemetryTopics.SENSOR_TOPIC_V1, sensorEventAvro);
+                new ProducerRecord<>(config.getKafka().getTopics().getSensor(), sensorEventAvro);
         producer.send(record);
     }
 

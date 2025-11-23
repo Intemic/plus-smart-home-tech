@@ -3,9 +3,11 @@ package ru.yandex.practicum.telemetry.collector.service.handler.sensor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.telemetry.collector.config.CollectorConfig;
 import ru.yandex.practicum.telemetry.collector.config.KafkaClient;
 import ru.yandex.practicum.telemetry.collector.dto.sensor.*;
 import org.apache.kafka.clients.producer.Producer;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SensorEventHandlerFactory {
     private final KafkaClient client;
+    private final CollectorConfig config;
 
     private static final List<Class<? extends SensorEventHandler>> sensorClasses =
             List.of(ClimateEventHandler.class, LightEventHandler.class, MotionEventHandler.class,
@@ -22,9 +25,11 @@ public class SensorEventHandlerFactory {
 
     private SensorEventHandler create(Class<? extends SensorEventHandler> handlerClass) {
         try {
-            Constructor<?> classConstructor = handlerClass.getDeclaredConstructor(Producer.class);
+            Class<?>[] classParam = new Class[]{Producer.class, CollectorConfig.class};
+            Constructor<?> classConstructor = handlerClass.getDeclaredConstructor(classParam);
             classConstructor.setAccessible(true);
-            return (SensorEventHandler) classConstructor.newInstance(client.getProducer());
+            Object[] args = new Object[]{client.getProducer(), config};
+            return (SensorEventHandler) classConstructor.newInstance(client.getProducer(), config);
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException |
                  NoSuchMethodException e) {
             log.error("Ошибка создания обработчика класса %s - ".formatted(handlerClass));
@@ -34,7 +39,7 @@ public class SensorEventHandlerFactory {
 
     public List<SensorEventHandler> getHandlers() {
         return sensorClasses.stream()
-                .map( handlerClass -> create(handlerClass))
+                .map(handlerClass -> create(handlerClass))
                 .toList();
     }
 }

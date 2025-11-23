@@ -9,7 +9,6 @@ import ru.yandex.practicum.telemetry.collector.dto.hub.HubEvent;
 import ru.yandex.practicum.telemetry.collector.dto.sensor.SensorEvent;
 import ru.yandex.practicum.telemetry.collector.service.CollectorService;
 
-@Validated
 @RequestMapping("/events")
 @RestController
 @RequiredArgsConstructor

@@ -3,6 +3,7 @@ package ru.yandex.practicum.telemetry.collector.service.handler.hub;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.producer.Producer;
 import ru.yandex.practicum.kafka.telemetry.event.*;
+import ru.yandex.practicum.telemetry.collector.config.CollectorConfig;
 import ru.yandex.practicum.telemetry.collector.dto.hub.HubEvent;
 import ru.yandex.practicum.telemetry.collector.dto.hub.ScenarioAddedEvent;
 import ru.yandex.practicum.telemetry.collector.utill.Action;
@@ -13,8 +14,8 @@ import ru.yandex.practicum.telemetry.collector.utill.TypeCondition;
 import java.util.List;
 
 public class ScenarioAddedEventHandler extends HubEventHandler {
-    public ScenarioAddedEventHandler(Producer<String, SpecificRecordBase> producer) {
-        super(producer);
+    public ScenarioAddedEventHandler(Producer<String, SpecificRecordBase> producer, CollectorConfig config) {
+        super(producer, config);
     }
 
     private TypeConditionAvro convertTypeCondition(TypeCondition type) {

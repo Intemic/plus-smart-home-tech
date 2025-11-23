@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Producer;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.telemetry.collector.config.CollectorConfig;
 import ru.yandex.practicum.telemetry.collector.config.KafkaClient;
 import ru.yandex.practicum.telemetry.collector.service.handler.sensor.*;
 
@@ -16,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class HubEventHandlerFactory {
     private final KafkaClient client;
+    private final CollectorConfig config;
 
     private static final List<Class<? extends HubEventHandler>> hubClasses =
             List.of(DeviceAddedEventHandler.class, DeviceRemovedEventHandler.class,
@@ -23,9 +25,11 @@ public class HubEventHandlerFactory {
 
     private HubEventHandler create(Class<? extends HubEventHandler> handlerClass) {
         try {
-            Constructor<?> classConstructor = handlerClass.getDeclaredConstructor(Producer.class);
+            Class<?>[] classParam = new Class[]{Producer.class, CollectorConfig.class};
+            Constructor<?> classConstructor = handlerClass.getDeclaredConstructor(classParam);
             classConstructor.setAccessible(true);
-            return (HubEventHandler) classConstructor.newInstance(client.getProducer());
+            Object[] args = new Object[]{client.getProducer(), config};
+            return (HubEventHandler) classConstructor.newInstance(args);
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException |
                  NoSuchMethodException e) {
             log.error("Ошибка создания обработчика класса %s - ".formatted(handlerClass));

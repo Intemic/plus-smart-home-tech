@@ -1,0 +1,32 @@
+package ru.yandex.practicum.telemetry.collector.config;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+@Getter
+@Setter
+@ConfigurationProperties("collector")
+public class CollectorConfig {
+    private KafkaConfig kafka;
+
+    @Getter
+    @Setter
+    public static class KafkaConfig {
+        private MainKafkaConfig main;
+        private TopicKafkaConfig topics;
+    }
+
+    @Getter
+    @Setter
+    public static class MainKafkaConfig {
+        private String serverConfig;
+    }
+
+    @Getter
+    @Setter
+    public static  class TopicKafkaConfig {
+        private String sensor;
+        private String hub;
+    }
+}

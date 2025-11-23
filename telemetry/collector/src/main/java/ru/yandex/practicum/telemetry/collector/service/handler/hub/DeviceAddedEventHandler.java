@@ -4,14 +4,15 @@ import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.producer.Producer;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceAddedEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceTypeAvro;
+import ru.yandex.practicum.telemetry.collector.config.CollectorConfig;
 import ru.yandex.practicum.telemetry.collector.dto.hub.DeviceAddedEvent;
 import ru.yandex.practicum.telemetry.collector.dto.hub.HubEvent;
 import ru.yandex.practicum.telemetry.collector.utill.DeviceType;
 import ru.yandex.practicum.telemetry.collector.utill.HubEventType;
 
 public class DeviceAddedEventHandler extends HubEventHandler {
-    public DeviceAddedEventHandler(Producer<String, SpecificRecordBase> producer) {
-        super(producer);
+    public DeviceAddedEventHandler(Producer<String, SpecificRecordBase> producer, CollectorConfig config) {
+        super(producer, config);
     }
 
     private DeviceTypeAvro convertDeviceType(DeviceType deviceType) {
