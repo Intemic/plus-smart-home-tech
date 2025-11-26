@@ -1,32 +1,33 @@
 package ru.yandex.practicum.telemetry.collector.config;
 
-import lombok.RequiredArgsConstructor;
-import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.util.Properties;
 
-@RequiredArgsConstructor
 @Component
-public class KafaClientImp implements KafkaClient {
-    private Producer<String, SpecificRecordBase> producer;
-    private Consumer<String, SpecificRecordBase> consumer;
+public class KafaClientImp<K, V> implements KafkaClient<K, V> {
+    private Producer<K, V> producer;
+    private Consumer<K, V> consumer;
     private final CollectorConfig config;
 
-    public Producer<String, SpecificRecordBase> getProducer() {
+    public KafaClientImp(@Autowired CollectorConfig config) {
+        this.config = config;
+    }
+
+    public Producer<K, V> getProducer() {
         if (producer == null)
             initProducer();
 
         return producer;
     }
 
-    public Consumer<String, SpecificRecordBase> getConsumer() {
+    public Consumer<K, V> getConsumer() {
         return null;
     }
 
