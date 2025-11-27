@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecordBase;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.kafka.telemetry.serialization.SensorAvroSerializer;
 import ru.yandex.practicum.telemetry.collector.config.KafkaClient;
 import ru.yandex.practicum.telemetry.collector.rest.dto.hub.HubEvent;
 import ru.yandex.practicum.telemetry.collector.rest.dto.sensor.SensorEvent;
@@ -25,12 +27,12 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class CollectorServiceImp implements CollectorService {
-    private final KafkaClient<String, SpecificRecordBase> kafkaClient;
+    private final KafkaClient<String, SpecificRecordBase, StringSerializer, SensorAvroSerializer> kafkaClient;
     private final ObjectMapper objectMapper;
     private Map<SensorEventType, SensorEventHandler> sensorEventHandlerMap;
     private Map<HubEventType, HubEventHandler> hubEventHandlerMap;
 
-    public CollectorServiceImp(@Autowired KafkaClient<String, SpecificRecordBase> kafkaClient,
+    public CollectorServiceImp(@Autowired KafkaClient<String, SpecificRecordBase, StringSerializer, SensorAvroSerializer> kafkaClient,
                                @Autowired ObjectMapper objectMapper,
                                @Autowired SensorEventHandlerFactory sensorFactory,
                                @Autowired HubEventHandlerFactory hubFactory) {

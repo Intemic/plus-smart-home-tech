@@ -6,12 +6,12 @@ import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
 
 @Component
 @RequiredArgsConstructor
-public class MotionSensorHandler implements SensorEventHandler {
+public class TemperatureSensorHandler implements SensorEventHandler{
     private final SensorClient sensorClient;
 
     @Override
     public SensorEventProto.PayloadCase getMessageType() {
-        return SensorEventProto.PayloadCase.MOTION_SENSOR;
+        return SensorEventProto.PayloadCase.TEMPERATURE_SENSOR;
     }
 
     @Override
