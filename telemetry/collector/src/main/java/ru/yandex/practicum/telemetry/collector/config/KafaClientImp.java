@@ -1,9 +1,11 @@
 package ru.yandex.practicum.telemetry.collector.config;
 
+import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.Serializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -11,25 +13,23 @@ import java.time.Duration;
 import java.util.Properties;
 
 @Component
-public class KafaClientImp<K, V, SK, SV> implements KafkaClient<K, V, SK, SV> {
-    private Producer<K, V> producer;
-    private Consumer<K, V> consumer;
-    private Class<SK> keyClassSerializer;
-    private Class<SV> valueClassSerializer;
+public class KafaClientImp implements KafkaClient<String, SpecificRecordBase> {
+    private Producer<String, SpecificRecordBase> producer;
+    private Consumer<String, SpecificRecordBase> consumer;
     private final CollectorConfig config;
 
     public KafaClientImp(@Autowired CollectorConfig config) {
         this.config = config;
     }
 
-    public Producer<K, V> getProducer() {
+    public Producer getProducer() {
         if (producer == null)
             initProducer();
 
         return producer;
     }
 
-    public Consumer<K, V> getConsumer() {
+    public Consumer getConsumer() {
         return null;
     }
 
@@ -46,16 +46,12 @@ public class KafaClientImp<K, V, SK, SV> implements KafkaClient<K, V, SK, SV> {
     }
 
     private void initProducer() {
-        String keySerializer = keyClassSerializer.getPackage() + "." + keyClassSerializer.getName();
-        String valueSerializer = valueClassSerializer.getPackage() + "." + valueClassSerializer.getName();
-
         Properties properties = new Properties();
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, config.getKafka().getMain().getServerConfig());
-        properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, keySerializer);
-//                "org.apache.kafka.common.serialization.StringSerializer");
-        properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, valueSerializer);
-             //   "ru.yandex.practicum.kafka.telemetry.serialization.SensorAvroSerializer");
-//                "ru.yandex.practicum.kafka.telemetry.serialization.SensorGrpcSerializer");
+        properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
+                "org.apache.kafka.common.serialization.StringSerializer");
+        properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+                "ru.yandex.practicum.kafka.telemetry.serialization.SensorAvroSerializer");
         producer = new KafkaProducer<>(properties);
     }
 }

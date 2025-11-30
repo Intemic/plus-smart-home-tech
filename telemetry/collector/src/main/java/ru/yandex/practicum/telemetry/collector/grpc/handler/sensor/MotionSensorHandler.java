@@ -2,7 +2,12 @@ package ru.yandex.practicum.telemetry.collector.grpc.handler.sensor;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.grpc.telemetry.event.MotionSensorProto;
 import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
+import ru.yandex.practicum.kafka.telemetry.event.MotionSensorEventAvro;
+import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
+
+import java.time.Instant;
 
 @Component
 @RequiredArgsConstructor
@@ -16,6 +21,20 @@ public class MotionSensorHandler implements SensorEventHandler {
 
     @Override
     public void handle(SensorEventProto event) {
-        sensorClient.sendEvent(event);
+        MotionSensorProto eventProto = event.getMotionSensor();
+        MotionSensorEventAvro payload = MotionSensorEventAvro.newBuilder()
+                .setMotion(eventProto.getMotion())
+                .setLinkQuality(eventProto.getLinkQuality())
+                .setVoltage(eventProto.getVoltage())
+                .build();
+
+        SensorEventAvro eventAvro = SensorEventAvro.newBuilder()
+                .setId(event.getId())
+                .setHubId(event.getHubId())
+                .setTimestamp(Instant.ofEpochSecond(event.getTimestamp().getSeconds(), event.getTimestamp().getNanos()))
+                .setPayload(payload)
+                .build();
+
+        sensorClient.sendEvent(eventAvro);
     }
 }

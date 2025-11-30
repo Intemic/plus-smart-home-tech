@@ -16,7 +16,7 @@ enum DeviceTypeProto {
   SWITCH_SENSOR = 4;      // переключатель
 }
 
-enum TypeConditionProto {
+enum ConditionTypeProto {
   MOTION = 0;
   LUMINOSITY = 1;
   SWITCH = 2;
@@ -25,13 +25,13 @@ enum TypeConditionProto {
   HUMIDITY = 5;
 }
 
-enum OperationProto {
+enum ConditionOperationProto {
   EQUALS = 0;
   GREATER_THAN = 1;
   LOWER_THAN = 2;
 }
 
-enum ActionProto {
+enum ActionTypeProto {
   ACTIVATE = 0;
   DEACTIVATE = 1;
   INVERSE = 2;
@@ -49,8 +49,8 @@ message DeviceRemovedEventProto {
 
 message ScenarioConditionProto {
   string sensorId = 1;
-  TypeConditionProto type = 2;
-  OperationProto operation = 3;
+  ConditionTypeProto type = 2;
+  ConditionOperationProto operation = 3;
   oneof value {
     bool bool_val = 4;
     int32 int_val = 5;
@@ -59,7 +59,7 @@ message ScenarioConditionProto {
 
 message DeviceActionProto {
   string sensorId = 1;
-  ActionProto type = 2;
+  ActionTypeProto type = 2;
   optional int32 value = 3;
 }
 
