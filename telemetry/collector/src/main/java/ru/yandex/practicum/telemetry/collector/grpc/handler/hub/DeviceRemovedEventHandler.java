@@ -5,9 +5,6 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.grpc.telemetry.event.DeviceRemovedEventProto;
 import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceRemovedEventAvro;
-import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
-
-import java.time.Instant;
 
 @Component
 @RequiredArgsConstructor
@@ -25,12 +22,7 @@ public class DeviceRemovedEventHandler implements HubEventHandler{
         DeviceRemovedEventAvro payload = DeviceRemovedEventAvro.newBuilder()
                 .setId(removedEventProto.getId())
                 .build();
-        HubEventAvro hubEventAvro = HubEventAvro.newBuilder()
-                .setHubId(event.getHubId())
-                .setTimestamp(Instant.ofEpochSecond(event.getTimestamp().getSeconds(), event.getTimestamp().getNanos()))
-                .setPayload(payload)
-                .build();
 
-        hubClient.sendEvent(hubEventAvro);
+        hubClient.sendEvent(event, payload);
    }
 }

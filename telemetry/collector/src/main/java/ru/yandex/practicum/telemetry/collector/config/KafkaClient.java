@@ -4,15 +4,10 @@ import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.producer.Producer;
 
-public interface KafkaClient<K, V> {
-//    Producer<String, SpecificRecordBase> getProducer();
-//
-//    Consumer<String, SpecificRecordBase> getConsumer();
+public interface KafkaClient {
+    Producer<String, SpecificRecordBase> getProducer();
 
-    Producer<K, V> getProducer();
-
-    Consumer<K, V> getConsumer();
-
+    Consumer<String, SpecificRecordBase> getConsumer();
 
     void stop();
 }

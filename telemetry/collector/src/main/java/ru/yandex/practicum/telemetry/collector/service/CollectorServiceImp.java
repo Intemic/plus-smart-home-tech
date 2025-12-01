@@ -29,12 +29,12 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class CollectorServiceImp implements CollectorService {
-    private final KafkaClient<String, SpecificRecordBase> kafkaClient;
+    private final KafkaClient kafkaClient;
     private final ObjectMapper objectMapper;
     private Map<SensorEventType, SensorEventHandler> sensorEventHandlerMap;
     private Map<HubEventType, HubEventHandler> hubEventHandlerMap;
 
-    public CollectorServiceImp(@Autowired KafkaClient<String, SpecificRecordBase> kafkaClient,
+    public CollectorServiceImp(@Autowired KafkaClient kafkaClient,
                                @Autowired ObjectMapper objectMapper,
                                @Autowired SensorEventHandlerFactory sensorFactory,
                                @Autowired HubEventHandlerFactory hubFactory) {

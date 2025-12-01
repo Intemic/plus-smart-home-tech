@@ -28,13 +28,6 @@ public class MotionSensorHandler implements SensorEventHandler {
                 .setVoltage(eventProto.getVoltage())
                 .build();
 
-        SensorEventAvro eventAvro = SensorEventAvro.newBuilder()
-                .setId(event.getId())
-                .setHubId(event.getHubId())
-                .setTimestamp(Instant.ofEpochSecond(event.getTimestamp().getSeconds(), event.getTimestamp().getNanos()))
-                .setPayload(payload)
-                .build();
-
-        sensorClient.sendEvent(eventAvro);
+        sensorClient.sendEvent(event, payload);
     }
 }

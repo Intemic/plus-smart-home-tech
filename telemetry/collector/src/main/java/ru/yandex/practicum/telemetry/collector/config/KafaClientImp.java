@@ -13,7 +13,7 @@ import java.time.Duration;
 import java.util.Properties;
 
 @Component
-public class KafaClientImp implements KafkaClient<String, SpecificRecordBase> {
+public class KafaClientImp implements KafkaClient {
     private Producer<String, SpecificRecordBase> producer;
     private Consumer<String, SpecificRecordBase> consumer;
     private final CollectorConfig config;

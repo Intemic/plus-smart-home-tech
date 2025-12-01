@@ -52,13 +52,7 @@ public class ScenarioAddedEventHandler implements HubEventHandler {
                 .setActions(actionsAvro)
                 .build();
 
-        HubEventAvro eventAvro = HubEventAvro.newBuilder()
-                .setHubId(event.getHubId())
-                .setTimestamp(Instant.ofEpochSecond(event.getTimestamp().getSeconds(), event.getTimestamp().getNanos()))
-                .setPayload(payload)
-                .build();
-
-        hubClient.sendEvent(eventAvro);
+        hubClient.sendEvent(event, payload);
     }
 
     private TypeConditionAvro convertTypeCondition(ConditionTypeProto type) {

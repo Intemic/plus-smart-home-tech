@@ -7,9 +7,6 @@ import ru.yandex.practicum.grpc.telemetry.event.DeviceTypeProto;
 import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceAddedEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceTypeAvro;
-import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
-
-import java.time.Instant;
 
 @Component
 @RequiredArgsConstructor
@@ -28,13 +25,8 @@ public class DeviceAddedEventHandler implements HubEventHandler{
                 .setId(addedEventProto.getId())
                 .setDeviceType(convertDeviceType(addedEventProto.getType()))
                 .build();
-        HubEventAvro hubEventAvro = HubEventAvro.newBuilder()
-                .setHubId(event.getHubId())
-                .setTimestamp(Instant.ofEpochSecond(event.getTimestamp().getSeconds(), event.getTimestamp().getNanos()))
-                .setPayload(payload)
-                .build();
 
-        hubClient.sendEvent(hubEventAvro);
+        hubClient.sendEvent(event, payload);
     }
 
 

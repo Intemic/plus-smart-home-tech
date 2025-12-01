@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
 import ru.yandex.practicum.grpc.telemetry.event.TemperatureSensorProto;
-import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.TemperatureSensorEventAvro;
-
-import java.time.Instant;
 
 @Component
 @RequiredArgsConstructor
@@ -27,13 +24,6 @@ public class TemperatureSensorHandler implements SensorEventHandler{
                 .setTemperatureF(eventProto.getTemperatureF())
                 .build();
 
-        SensorEventAvro eventAvro = SensorEventAvro.newBuilder()
-                .setId(event.getId())
-                .setHubId(event.getHubId())
-                .setTimestamp(Instant.ofEpochSecond(event.getTimestamp().getSeconds(), event.getTimestamp().getNanos()))
-                .setPayload(payload)
-                .build();
-
-        sensorClient.sendEvent(eventAvro);
+        sensorClient.sendEvent(event, payload);
     }
 }
