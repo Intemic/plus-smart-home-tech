@@ -1,6 +1,7 @@
 package ru.yandex.practicum.telemetry.aggregator;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -9,25 +10,28 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
+import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
 
 import java.time.Duration;
 import java.util.Properties;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class KafkaClient {
     private final AggregatorConfig config;
-    private Producer<String, SpecificRecordBase> producer;
-    private Consumer<String, SpecificRecordBase> consumer;
+    private Producer<String, SensorsSnapshotAvro> producer;
+    private Consumer<String, SensorEventAvro> consumer;
 
-    public Producer<String, SpecificRecordBase> getProducer() {
+    public Producer<String, SensorsSnapshotAvro> getProducer() {
         if (producer == null)
             initProducer();
 
         return producer;
     }
 
-    public Consumer<String, SpecificRecordBase> getConsumer() {
+    public Consumer<String, SensorEventAvro> getConsumer() {
         if (consumer == null)
             initConsumer();
         return consumer;
@@ -46,6 +50,7 @@ public class KafkaClient {
     };
 
     private void initProducer() {
+        log.info("Создаем producer для SensorsSnapshotAvro");
         Properties properties = new Properties();
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,  config.getKafka().getMain().getServerConfig());
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,

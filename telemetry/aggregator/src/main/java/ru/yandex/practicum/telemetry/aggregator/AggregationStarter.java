@@ -7,13 +7,17 @@ import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.WakeupException;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
+import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Класс AggregationStarter, ответственный за запуск агрегации данных.
@@ -24,6 +28,7 @@ import java.util.Map;
 public class AggregationStarter {
     private final AggregatorConfig config;
     private final KafkaClient kafkaClient;
+    private SnapshotCollector snapshotCollector;
 
     /**
      * Метод для начала процесса агрегации данных.
@@ -32,19 +37,21 @@ public class AggregationStarter {
      */
     public void start() {
         Map<TopicPartition, OffsetAndMetadata> offsets = new HashMap<>();
+        snapshotCollector = new SnapshotCollector();
 
         try {
-            Consumer<String, SpecificRecordBase> consumer = kafkaClient.getConsumer();
+            Consumer<String, SensorEventAvro> consumer = kafkaClient.getConsumer();
             consumer.subscribe(List.of(config.getKafka().getTopics().getSensor()));
+
             Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
 
             // Цикл обработки событий
             while (true) {
-               ConsumerRecords<String, SpecificRecordBase> records =
+               ConsumerRecords<String, SensorEventAvro> records =
                        consumer.poll(config.getKafka().getMain().getConsumer().getDurationMillis());
 
-               for (ConsumerRecord<String, SpecificRecordBase> record: records) {
-
+               for (ConsumerRecord<String, SensorEventAvro> record: records) {
+                    process(record);
                }
             }
 
@@ -70,4 +77,14 @@ public class AggregationStarter {
             }
         }
     }
+
+    private void process(ConsumerRecord<String, SensorEventAvro> record) {
+        // данные изменились? отправляем
+        snapshotCollector.updateState(record.value()).ifPresent( ( snapshotAvro ) -> {
+            ProducerRecord<String, SensorsSnapshotAvro> recordAvro =
+                    new ProducerRecord<>(config.getKafka().getTopics().getAggregate() , snapshotAvro);
+            kafkaClient.getProducer().send(recordAvro);
+        });
+    }
+
 }
