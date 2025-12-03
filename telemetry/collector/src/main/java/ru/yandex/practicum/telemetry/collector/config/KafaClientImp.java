@@ -5,7 +5,6 @@ import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.Serializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -38,7 +37,6 @@ public class KafaClientImp implements KafkaClient {
             // отправляем оставшиеся данные и закрываем продюсер
             producer.flush();
             producer.close(Duration.ofSeconds(10));
-            producer.close();
         }
 
         if (consumer != null)
