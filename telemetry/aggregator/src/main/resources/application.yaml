@@ -9,7 +9,7 @@ aggregator:
         key-deserializer: "org.apache.kafka.common.serialization.StringSerializer"
         value-deserializer: "ru.yandex.practicum.kafka.telemetry.serialization.SensorEventDeserializer"
         group-id: "aggregator-consumer"
-        duration-millis: 1000
+        duration-millis: 100
     topics:
       sensor: "telemetry.sensors.v1"
       aggregate: "telemetry.snapshots.v1"
