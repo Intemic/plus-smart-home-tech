@@ -37,7 +37,6 @@ public class KafaClientImp implements KafkaClient {
             // отправляем оставшиеся данные и закрываем продюсер
             producer.flush();
             producer.close(Duration.ofSeconds(10));
-            producer.close();
         }
 
         if (consumer != null)

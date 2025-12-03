@@ -28,9 +28,11 @@ public class SnapshotCollector {
         } catch (JsonProcessingException e) {
             log.info("Пришло сообщение %s".formatted(event.toString()));
         }
+
         SensorsSnapshotAvro snapshotAvro = shaphots.computeIfAbsent(event.getHubId(), k -> SensorsSnapshotAvro.newBuilder()
                 .setHubId(event.getHubId())
                 .setTimestamp(event.getTimestamp())
+                .setSensorsState(new HashMap<>())
                 .build());
 
         if (needUpdating(event, snapshotAvro.getSensorsState().get(event.getId()))) {
@@ -54,19 +56,25 @@ public class SnapshotCollector {
         }
 
         // если событие произошло позже и данные изменились
-        if (event.getTimestamp().isAfter(sensorsState.getTimestamp())) {
+        if (event.getTimestamp().isAfter(sensorsState.getTimestamp())
+                || event.getTimestamp().equals(sensorsState.getTimestamp())) {
             SpecificRecordBase payload = (SpecificRecordBase) event.getPayload();
             SpecificRecordBase data = (SpecificRecordBase) sensorsState.getData();
             Schema schema = payload.getSchema();
 
             // сравниваем по полям
-            for (Schema.Field field : schema.getFields())
-                if (!payload.get(field.name()).equals(data.get(field.name()))) {
+            for (Schema.Field field : schema.getFields()) {
+                Object newValue = payload.get(field.name());
+                Object oldValue = data.get(field.name());
+                if (!newValue.equals(oldValue)) {
                     log.info("Отличаются значения поля: \"%s\", старое = %s, новое = %s".formatted(
-                            field.name(), data.get(field.name() == null ? "null" : (data.get(field.name()).toString())),
-                                    payload.get(field.name())));
+                            field.name(),
+                            oldValue == null ? "null" : oldValue.toString(),
+                            newValue.toString())
+                    );
                     return true;
                 }
+            }
         }
 
         return false;

@@ -2,12 +2,11 @@ package ru.yandex.practicum.telemetry.aggregator;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
 @Setter
-@ConfigurationProperties
+@ConfigurationProperties("aggregator")
 public class AggregatorConfig {
     private KafkaConfig kafka;
 
@@ -40,11 +39,12 @@ public class AggregatorConfig {
         private String valueDeserializer;
         private String groupId;
         private int durationMillis;
+        private String autoOffsetReset;
     }
 
     @Getter
     @Setter
-    public static  class TopicKafkaConfig {
+    public static class TopicKafkaConfig {
         private String sensor;
         private String aggregate;
     }

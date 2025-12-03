@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -19,7 +18,6 @@ import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Класс AggregationStarter, ответственный за запуск агрегации данных.
@@ -44,12 +42,11 @@ public class AggregationStarter {
     public void start() {
         snapshotCollector = new SnapshotCollector(objectMapper);
         processedRecord = 0;
+        Consumer<String, SensorEventAvro> consumer = kafkaClient.getConsumer();
+        Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
 
         try {
-            Consumer<String, SensorEventAvro> consumer = kafkaClient.getConsumer();
             consumer.subscribe(List.of(config.getKafka().getTopics().getSensor()));
-
-            Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
 
             // Цикл обработки событий
             while (true) {
@@ -71,11 +68,10 @@ public class AggregationStarter {
                 // Перед тем, как закрыть продюсер и консьюмер, нужно убедится,
                 // что все сообщения, лежащие в буффере, отправлены и
                 // все оффсеты обработанных сообщений зафиксированы
-
-
+                kafkaClient.getProducer().flush();
                 // здесь нужно вызвать метод продюсера для сброса данных в буффере
                 // здесь нужно вызвать метод консьюмера для фиксиции смещений
-
+                consumer.commitSync(currentOffsets);
             } finally {
                 kafkaClient.stop();
             }
