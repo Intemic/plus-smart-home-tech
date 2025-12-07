@@ -1,0 +1,30 @@
+package ru.yandex.practicum.telemetry.analyzer.handler;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
+import ru.yandex.practicum.kafka.telemetry.event.ScenarioRemovedEventAvro;
+import ru.yandex.practicum.telemetry.analyzer.model.Scenario;
+import ru.yandex.practicum.telemetry.analyzer.repository.ScenarioRepository;
+
+@Component
+@RequiredArgsConstructor
+public class ScenarioRemovedHandler implements HubEventHandler<ScenarioRemovedEventAvro>{
+    private final ScenarioRepository repository;
+
+    @Override
+    public Class<ScenarioRemovedEventAvro> getType() {
+        return ScenarioRemovedEventAvro.class;
+    }
+
+    @Override
+    public void handle(HubEventAvro event) {
+        ScenarioRemovedEventAvro scenarioRemoved = (ScenarioRemovedEventAvro) event.getPayload();
+        Scenario scenario = Scenario.builder()
+                .hubId(event.getHubId())
+                .name(scenarioRemoved.getName())
+                .build();
+
+        repository.delete(scenario);
+    }
+}
