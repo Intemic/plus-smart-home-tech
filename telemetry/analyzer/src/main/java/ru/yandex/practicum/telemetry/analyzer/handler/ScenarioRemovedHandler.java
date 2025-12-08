@@ -20,11 +20,7 @@ public class ScenarioRemovedHandler implements HubEventHandler<ScenarioRemovedEv
     @Override
     public void handle(HubEventAvro event) {
         ScenarioRemovedEventAvro scenarioRemoved = (ScenarioRemovedEventAvro) event.getPayload();
-        Scenario scenario = Scenario.builder()
-                .hubId(event.getHubId())
-                .name(scenarioRemoved.getName())
-                .build();
-
-        repository.delete(scenario);
+        repository.findByHubIdAndName(event.getHubId(), scenarioRemoved.getName())
+                .ifPresent( scenario ->  repository.delete(scenario));
     }
 }

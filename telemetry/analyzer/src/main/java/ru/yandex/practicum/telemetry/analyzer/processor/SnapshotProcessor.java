@@ -8,20 +8,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
 import ru.yandex.practicum.telemetry.analyzer.config.KafkaConfig;
+import ru.yandex.practicum.telemetry.analyzer.model.Scenario;
+import ru.yandex.practicum.telemetry.analyzer.repository.ScenarioRepository;
 
 @Component
 @Slf4j
 public class SnapshotProcessor extends BaseProcessor<String, SensorsSnapshotAvro>{
     private final int MAX_COUNT_PROCESSED_RECORDS = 10;
+    private final ScenarioRepository repository;
     private int processedRecord;
 
-    public SnapshotProcessor(@Autowired KafkaConfig config) {
+    public SnapshotProcessor(@Autowired KafkaConfig config,
+                             @Autowired ScenarioRepository repository) {
         super(config.getServerConfig(), config.getConsumers().getSnapshot());
+        this.repository = repository;
     }
 
     @Override
     public void process(ConsumerRecord<String, SensorsSnapshotAvro> record) {
-
+        repository.findByHubId(record.value().getHubId()).stream()
+                .filter( scenario -> {})
+                .map()
+                .reduce();
     }
 
     @Override
