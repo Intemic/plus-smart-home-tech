@@ -11,6 +11,8 @@ import ru.yandex.practicum.telemetry.analyzer.config.KafkaConfig;
 import ru.yandex.practicum.telemetry.analyzer.model.Scenario;
 import ru.yandex.practicum.telemetry.analyzer.repository.ScenarioRepository;
 
+import java.util.function.Predicate;
+
 @Component
 @Slf4j
 public class SnapshotProcessor extends BaseProcessor<String, SensorsSnapshotAvro>{
@@ -27,7 +29,7 @@ public class SnapshotProcessor extends BaseProcessor<String, SensorsSnapshotAvro
     @Override
     public void process(ConsumerRecord<String, SensorsSnapshotAvro> record) {
         repository.findByHubId(record.value().getHubId()).stream()
-                .filter( scenario -> {})
+                .filter( scenario -> scenario.getSnapshotPredicate().test(record.value()))
                 .map()
                 .reduce();
     }

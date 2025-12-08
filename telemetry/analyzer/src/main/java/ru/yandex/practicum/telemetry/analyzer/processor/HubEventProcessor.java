@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
 import ru.yandex.practicum.telemetry.analyzer.config.KafkaConfig;
-import ru.yandex.practicum.telemetry.analyzer.handler.HubEventHandler;
+import ru.yandex.practicum.telemetry.analyzer.handler.hub.HubEventHandler;
 
 import java.util.Map;
 import java.util.Set;

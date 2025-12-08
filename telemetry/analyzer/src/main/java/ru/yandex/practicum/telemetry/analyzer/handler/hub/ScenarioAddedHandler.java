@@ -1,4 +1,4 @@
-package ru.yandex.practicum.telemetry.analyzer.handler;
+package ru.yandex.practicum.telemetry.analyzer.handler.hub;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -7,7 +7,7 @@ import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ScenarioAddedEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ScenarioConditionAvro;
 import ru.yandex.practicum.telemetry.analyzer.model.Action;
-import ru.yandex.practicum.telemetry.analyzer.model.Conditon;
+import ru.yandex.practicum.telemetry.analyzer.model.Condition;
 import ru.yandex.practicum.telemetry.analyzer.model.Scenario;
 import ru.yandex.practicum.telemetry.analyzer.repository.ScenarioRepository;
 
@@ -27,10 +27,10 @@ public class ScenarioAddedHandler implements HubEventHandler<ScenarioAddedEventA
     @Override
     public void handle(HubEventAvro event) {
         ScenarioAddedEventAvro scenarioAdded = (ScenarioAddedEventAvro) event.getPayload();
-        Map<String, Conditon> conditionMap = scenarioAdded.getConditions().stream()
+        Map<String, Condition> conditionMap = scenarioAdded.getConditions().stream()
                 .collect(Collectors.toMap(
                         ScenarioConditionAvro::getSensorId,
-                        conditionAvro -> Conditon.builder()
+                        conditionAvro -> Condition.builder()
                                 .type(conditionAvro.getType())
                                 .operation(conditionAvro.getOperation())
                                 .value(convertValue(conditionAvro.getValue()))

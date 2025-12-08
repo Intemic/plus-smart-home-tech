@@ -12,7 +12,7 @@ import ru.yandex.practicum.kafka.telemetry.event.TypeConditionAvro;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Conditon {
+public class Condition {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
