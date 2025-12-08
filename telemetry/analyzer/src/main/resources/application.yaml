@@ -7,11 +7,12 @@ spring:
         format_sql: true
   sql:
     init:
-      mode: "always"
+      mode: always
+      schema-locations: classpath:schema.sql
 
   datasource:
     driverClassName: "org.postgresql.Driver"
-    url: "jdbc:postgresql://localhost:5432/smart_home"
+    url: "jdbc:postgresql://localhost:6432/smart_home"
     username: "smart_home"
     password: "smart_home"
 

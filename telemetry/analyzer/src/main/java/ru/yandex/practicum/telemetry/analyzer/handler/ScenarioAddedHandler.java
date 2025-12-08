@@ -33,7 +33,7 @@ public class ScenarioAddedHandler implements HubEventHandler<ScenarioAddedEventA
                         conditionAvro -> Conditon.builder()
                                 .type(conditionAvro.getType())
                                 .operation(conditionAvro.getOperation())
-                                .value((Integer) conditionAvro.getValue())
+                                .value(convertValue(conditionAvro.getValue()))
                                 .build()));
         Map<String, Action> actionMap = scenarioAdded.getActions().stream()
                 .collect(Collectors.toMap(
@@ -52,5 +52,15 @@ public class ScenarioAddedHandler implements HubEventHandler<ScenarioAddedEventA
                 .build();
 
         repository.save(scenario);
+    }
+
+    private Integer convertValue(Object value) {
+        if (value == null)
+            return null;
+
+        if (value instanceof Boolean)
+            return (Boolean)value == true ? 1 : 0;
+
+        return (Integer) value;
     }
 }

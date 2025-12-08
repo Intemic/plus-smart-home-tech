@@ -1,9 +1,7 @@
 package ru.yandex.practicum.telemetry.analyzer.model;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import ru.yandex.practicum.kafka.telemetry.event.OperationAvro;
 import ru.yandex.practicum.kafka.telemetry.event.TypeConditionAvro;
 
@@ -12,6 +10,8 @@ import ru.yandex.practicum.kafka.telemetry.event.TypeConditionAvro;
 @Builder
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Conditon {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

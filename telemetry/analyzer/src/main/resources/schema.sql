@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS scenario_actions (
     PRIMARY KEY (scenario_id, sensor_id, action_id)
 );
 
+
 -- создаём функцию для проверки, что связываемые сценарий и датчик работают с одним и тем же хабом
 CREATE OR REPLACE FUNCTION check_hub_id()
 RETURNS TRIGGER AS

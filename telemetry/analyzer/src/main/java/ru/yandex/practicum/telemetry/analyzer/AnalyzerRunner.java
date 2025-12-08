@@ -14,6 +14,9 @@ public class AnalyzerRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        hubEventProcessor.start();
+        Thread hubThread = new Thread(hubEventProcessor);
+        hubThread.start();
+
+        snapshotProcessor.start();
     }
 }
