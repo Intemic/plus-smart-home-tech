@@ -2,12 +2,13 @@ package ru.yandex.practicum.telemetry.analyzer.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.apache.avro.specific.SpecificRecordBase;
+import org.springframework.beans.factory.annotation.Autowired;
 import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
-import ru.yandex.practicum.telemetry.analyzer.handler.ScenarioPredicate;
+import ru.yandex.practicum.telemetry.analyzer.handler.snapshot.condition.ConditionHandlerManager;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 @Entity
@@ -43,24 +44,28 @@ public class Scenario  {
     )
     private Map<String, Action> actions = new HashMap<>();
 
+    @Transient
+    @Autowired
+    ConditionHandlerManager conditionManager;
+
     public Predicate<SensorsSnapshotAvro> getSnapshotPredicate() {
         return new Predicate<SensorsSnapshotAvro>() {
             @Override
-            public boolean test(SensorsSnapshotAvro avro) {
+            public boolean test(SensorsSnapshotAvro sensorsSnapshotAvro) {
+                SpecificRecordBase data;
                 boolean result = true;
 
-//                for (Map.Entry<String, Condition> entry: getConditions().entrySet()) {
-//                    result = result & checkCondition.check(
-//                            entry.getValue(),
-//                            sensorsSnapshotAvro.getSensorsState().get(entry.getKey()));
-//                    if (!result)
-//                        break;
-//                }
+                for (Map.Entry<String, Condition> entry: getConditions().entrySet()) {
+                    data = (SpecificRecordBase) sensorsSnapshotAvro.getSensorsState().get(entry.getKey()).getData();
 
+                  result = result & conditionManager.getHandler(data.getClass()).check(entry.getValue(), data);
 
-                return false;
+                    if (!result)
+                        break;
+                }
+
+                return result;
             }
-        }
+        };
     }
-
 }

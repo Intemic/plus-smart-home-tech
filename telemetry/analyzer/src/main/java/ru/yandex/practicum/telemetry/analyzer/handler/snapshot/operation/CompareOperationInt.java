@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public enum CompareOperationInt implements CompareOperation<Integer, Integer> {
-    EQUALS {
+    EQUALS( ) {
         public boolean compare(Integer reference, Integer value) {
             if (reference == null || value == null )
                 return false;
