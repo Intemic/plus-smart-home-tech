@@ -4,18 +4,21 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.springframework.beans.factory.annotation.Autowired;
+import ru.yandex.practicum.kafka.telemetry.event.SensorStateAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
 import ru.yandex.practicum.telemetry.analyzer.handler.snapshot.condition.ConditionHandlerManager;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 @Entity
 @Table(name = "scenarios")
-@Builder
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Scenario  {
@@ -33,7 +36,7 @@ public class Scenario  {
             joinColumns = @JoinColumn(name = "scenario_id"),
             inverseJoinColumns = @JoinColumn(name = "condition_id")
     )
-    private Map<String, Condition> conditions = new HashMap<>();
+    private Map<String, Condition> conditions; //= new HashMap<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @MapKeyColumn(table = "scenario_actions", name = "sensor_id")
@@ -42,30 +45,28 @@ public class Scenario  {
             joinColumns = @JoinColumn(name = "scenario_id"),
             inverseJoinColumns = @JoinColumn(name = "action_id")
     )
-    private Map<String, Action> actions = new HashMap<>();
+    private Map<String, Action> actions; //= new HashMap<>();
 
-    @Transient
-    @Autowired
-    ConditionHandlerManager conditionManager;
-
-    public Predicate<SensorsSnapshotAvro> getSnapshotPredicate() {
-        return new Predicate<SensorsSnapshotAvro>() {
-            @Override
-            public boolean test(SensorsSnapshotAvro sensorsSnapshotAvro) {
-                SpecificRecordBase data;
-                boolean result = true;
-
-                for (Map.Entry<String, Condition> entry: getConditions().entrySet()) {
-                    data = (SpecificRecordBase) sensorsSnapshotAvro.getSensorsState().get(entry.getKey()).getData();
-
-                  result = result & conditionManager.getHandler(data.getClass()).check(entry.getValue(), data);
-
-                    if (!result)
-                        break;
-                }
-
-                return result;
-            }
-        };
-    }
+//    public Predicate<SensorsSnapshotAvro> getSnapshotPredicate(ConditionHandlerManager conditionManager) {
+//        return new Predicate<SensorsSnapshotAvro>() {
+//            @Override
+//            public boolean test(SensorsSnapshotAvro sensorsSnapshot) {
+//                SpecificRecordBase data;
+//                boolean result = false;
+//
+//
+//                for (Map.Entry<String, Condition> entry: getConditions().entrySet()) {
+//                    data = (SpecificRecordBase) sensorsSnapshot.getSensorsState().get(entry.getKey()).getData();
+//
+////                    result = conditionManager.getHandler(data.getClass()).check(entry.getValue(),
+////                            data);
+//
+//                    if (!result)
+//                        break;
+//                }
+//
+//                return result;
+//            }
+//        };
+//    }
 }
