@@ -51,7 +51,7 @@ public class KafkaClient {
     ;
 
     private void initProducer() {
-        log.info("Создаем консьюмер");
+        log.info("Создаем продюсер");
         Properties properties = new Properties();
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, config.getKafka().getMain().getServerConfig());
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
@@ -62,7 +62,7 @@ public class KafkaClient {
     }
 
     private void initConsumer() {
-        log.info("Создаем consumer");
+        log.info("Создаем консьюмер");
         Properties properties = new Properties();
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, config.getKafka().getMain().getServerConfig());
         properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,

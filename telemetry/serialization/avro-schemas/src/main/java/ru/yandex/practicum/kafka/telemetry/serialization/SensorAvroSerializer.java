@@ -6,6 +6,7 @@ import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.specific.SpecificDatumWriter;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.common.serialization.Serializer;
+import ru.yandex.practicum.kafka.telemetry.serialization.exception.SerializerException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -27,7 +28,7 @@ public class SensorAvroSerializer implements Serializer<SpecificRecordBase> {
 
             return result;
         } catch (IOException ex) {
-            throw new RuntimeException("Ошибка сериализации для топика %s".formatted(topic), ex);
+            throw new SerializerException("Ошибка сериализации для топика %s".formatted(topic), ex);
         }
     }
 }

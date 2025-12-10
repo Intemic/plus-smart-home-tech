@@ -7,9 +7,9 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
-public class Aggregator {
+public class AggregatorApp {
     public static void main(String[] args) {
-        ConfigurableApplicationContext context = SpringApplication.run(Aggregator.class, args);
+        ConfigurableApplicationContext context = SpringApplication.run(AggregatorApp.class, args);
         context.getBean(AggregationStarter.class).start();
     }
 }
