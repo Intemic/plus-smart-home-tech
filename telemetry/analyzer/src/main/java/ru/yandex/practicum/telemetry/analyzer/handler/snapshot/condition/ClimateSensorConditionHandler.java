@@ -24,7 +24,7 @@ public class ClimateSensorConditionHandler implements ConditionHandler<Condition
             return false;
 
         try {
-           Integer sensorValue = switch (condition.getType()) {
+            Integer sensorValue = switch (condition.getType()) {
                 case HUMIDITY -> event.getHumidity();
                 case TEMPERATURE -> event.getTemperatureC();
                 case CO2LEVEL -> event.getCo2Level();

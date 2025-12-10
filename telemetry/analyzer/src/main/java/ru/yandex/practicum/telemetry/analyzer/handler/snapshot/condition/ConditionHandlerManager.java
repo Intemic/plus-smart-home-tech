@@ -16,9 +16,9 @@ public class ConditionHandlerManager {
             ConditionHandler<Condition, ? extends SpecificRecordBase>> handlerMap;
 
     public ConditionHandlerManager(
-           @Autowired Set<ConditionHandler<Condition, ? extends SpecificRecordBase>> handlers) {
-       handlerMap = handlers.stream()
-               .collect(Collectors.toMap(ConditionHandler::getType, Function.identity()));
+            @Autowired Set<ConditionHandler<Condition, ? extends SpecificRecordBase>> handlers) {
+        handlerMap = handlers.stream()
+                .collect(Collectors.toMap(ConditionHandler::getType, Function.identity()));
     }
 
     public ConditionHandler getHandler(Class classType) {

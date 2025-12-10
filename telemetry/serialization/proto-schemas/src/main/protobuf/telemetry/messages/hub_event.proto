@@ -87,7 +87,7 @@ message HubEventProto {
 message DeviceActionRequest {
   string hub_id = 1;
   string scenario_name = 2;
-  repeated DeviceActionProto action = 3;
+  DeviceActionProto action = 3;
   google.protobuf.Timestamp timestamp = 4;
 }
 

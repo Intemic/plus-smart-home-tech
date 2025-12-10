@@ -2,17 +2,8 @@ package ru.yandex.practicum.telemetry.analyzer.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.apache.avro.specific.SpecificRecordBase;
-import org.springframework.beans.factory.annotation.Autowired;
-import ru.yandex.practicum.kafka.telemetry.event.SensorStateAvro;
-import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
-import ru.yandex.practicum.telemetry.analyzer.handler.snapshot.condition.ConditionHandlerManager;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.function.Predicate;
 
 @Entity
 @Table(name = "scenarios")
@@ -21,7 +12,7 @@ import java.util.function.Predicate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Scenario  {
+public class Scenario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,7 +27,7 @@ public class Scenario  {
             joinColumns = @JoinColumn(name = "scenario_id"),
             inverseJoinColumns = @JoinColumn(name = "condition_id")
     )
-    private Map<String, Condition> conditions = new HashMap<>();
+    private Map<String, Condition> conditions;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @MapKeyColumn(table = "scenario_actions", name = "sensor_id")
@@ -45,5 +36,5 @@ public class Scenario  {
             joinColumns = @JoinColumn(name = "scenario_id"),
             inverseJoinColumns = @JoinColumn(name = "action_id")
     )
-    private Map<String, Action> actions = new HashMap<>();
+    private Map<String, Action> actions;
 }

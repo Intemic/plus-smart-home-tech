@@ -9,7 +9,7 @@ import ru.yandex.practicum.telemetry.analyzer.repository.SensorRepository;
 
 @Component
 @RequiredArgsConstructor
-public class DeviceRemovedHandler implements HubEventHandler<DeviceRemovedEventAvro>{
+public class DeviceRemovedHandler implements HubEventHandler<DeviceRemovedEventAvro> {
     private final SensorRepository repository;
 
     @Override
@@ -19,7 +19,7 @@ public class DeviceRemovedHandler implements HubEventHandler<DeviceRemovedEventA
 
     @Override
     public void handle(HubEventAvro event) {
-        DeviceRemovedEventAvro deviceRemoved = (DeviceRemovedEventAvro)event.getPayload();
+        DeviceRemovedEventAvro deviceRemoved = (DeviceRemovedEventAvro) event.getPayload();
         Sensor sensor = Sensor.builder()
                 .id(deviceRemoved.getId())
                 .hub_id(event.getHubId())

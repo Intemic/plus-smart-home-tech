@@ -15,7 +15,6 @@ public class CompareOperationGreaterThan implements CompareOperation<Integer, In
         if (reference == null || value == null )
             return false;
 
-   //     return reference > value;
         return reference < value;
     }
 }

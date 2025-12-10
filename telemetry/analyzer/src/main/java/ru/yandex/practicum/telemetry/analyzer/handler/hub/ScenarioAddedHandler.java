@@ -38,7 +38,7 @@ public class ScenarioAddedHandler implements HubEventHandler<ScenarioAddedEventA
         Map<String, Action> actionMap = scenarioAdded.getActions().stream()
                 .collect(Collectors.toMap(
                         DeviceActionAvro::getSensorId,
-                        deviceActionAvro ->  Action.builder()
+                        deviceActionAvro -> Action.builder()
                                 .type(deviceActionAvro.getType())
                                 .value(deviceActionAvro.getValue())
                                 .build()
@@ -59,7 +59,7 @@ public class ScenarioAddedHandler implements HubEventHandler<ScenarioAddedEventA
             return null;
 
         if (value instanceof Boolean)
-            return (Boolean)value == true ? 1 : 0;
+            return (Boolean) value == true ? 1 : 0;
 
         return (Integer) value;
     }

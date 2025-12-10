@@ -15,7 +15,6 @@ public class CompareOperationLowerThan implements CompareOperation<Integer, Inte
         if (reference == null || value == null )
             return false;
 
-//        return reference < value;
         return reference > value;
     }
 }

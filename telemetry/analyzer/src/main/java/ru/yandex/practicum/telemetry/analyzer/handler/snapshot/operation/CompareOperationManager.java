@@ -11,15 +11,15 @@ import java.util.stream.Collectors;
 
 @Component
 public class CompareOperationManager {
-  private final Map<OperationAvro, CompareOperation<Integer, Integer, OperationAvro>> compareOperationMap;
+    private final Map<OperationAvro, CompareOperation<Integer, Integer, OperationAvro>> compareOperationMap;
 
-  public CompareOperationManager(
-          @Autowired Set<CompareOperation<Integer, Integer, OperationAvro>> compareOperations) {
-     this.compareOperationMap = compareOperations.stream()
-                 .collect(Collectors.toMap(CompareOperation::getType, Function.identity()));
-  }
+    public CompareOperationManager(
+            @Autowired Set<CompareOperation<Integer, Integer, OperationAvro>> compareOperations) {
+        this.compareOperationMap = compareOperations.stream()
+                .collect(Collectors.toMap(CompareOperation::getType, Function.identity()));
+    }
 
-  public CompareOperation getCompareOperation(OperationAvro operation) {
-    return compareOperationMap.get(operation);
-  }
+    public CompareOperation getCompareOperation(OperationAvro operation) {
+        return compareOperationMap.get(operation);
+    }
 }

@@ -8,7 +8,7 @@ import ru.yandex.practicum.telemetry.analyzer.repository.ScenarioRepository;
 
 @Component
 @RequiredArgsConstructor
-public class ScenarioRemovedHandler implements HubEventHandler<ScenarioRemovedEventAvro>{
+public class ScenarioRemovedHandler implements HubEventHandler<ScenarioRemovedEventAvro> {
     private final ScenarioRepository repository;
 
     @Override
@@ -20,6 +20,6 @@ public class ScenarioRemovedHandler implements HubEventHandler<ScenarioRemovedEv
     public void handle(HubEventAvro event) {
         ScenarioRemovedEventAvro scenarioRemoved = (ScenarioRemovedEventAvro) event.getPayload();
         repository.findByHubIdAndName(event.getHubId(), scenarioRemoved.getName())
-                .ifPresent( scenario ->  repository.delete(scenario));
+                .ifPresent(scenario -> repository.delete(scenario));
     }
 }
