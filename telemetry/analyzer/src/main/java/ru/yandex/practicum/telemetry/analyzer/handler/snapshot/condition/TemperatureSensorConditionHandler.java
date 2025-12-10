@@ -1,12 +1,18 @@
 package ru.yandex.practicum.telemetry.analyzer.handler.snapshot.condition;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.kafka.telemetry.event.TemperatureSensorEventAvro;
-import ru.yandex.practicum.telemetry.analyzer.handler.snapshot.operation.CompareOperationInt;
+import ru.yandex.practicum.telemetry.analyzer.exception.IllegalTypeCondition;
+import ru.yandex.practicum.telemetry.analyzer.exception.UnsupportedOperation;
+import ru.yandex.practicum.telemetry.analyzer.handler.snapshot.operation.CompareOperationManager;
 import ru.yandex.practicum.telemetry.analyzer.model.Condition;
 
 @Component
+@RequiredArgsConstructor
 public class TemperatureSensorConditionHandler implements ConditionHandler<Condition, TemperatureSensorEventAvro> {
+    private final CompareOperationManager compareManager;
+
     @Override
     public Class<TemperatureSensorEventAvro> getType() {
         return TemperatureSensorEventAvro.class;
@@ -14,13 +20,22 @@ public class TemperatureSensorConditionHandler implements ConditionHandler<Condi
 
     @Override
     public boolean check(Condition condition, TemperatureSensorEventAvro event) {
-        String operation = condition.getOperation().toString();
+        if (event == null)
+            return false;
 
-        Integer sensorValue = switch (condition.getType()) {
-            case TEMPERATURE ->  event.getTemperatureC();
-            default -> throw new IllegalStateException("Параметр датчика: " + condition.getType() + " отсутствует");
-        };
+        try {
+            Integer sensorValue = switch (condition.getType()) {
+                case TEMPERATURE -> event.getTemperatureC();
+                default -> throw new IllegalTypeCondition("Не поддерживаемый тип условия: " + condition.getType());
+            };
 
-        return CompareOperationInt.valueOf(operation).compare(condition.getValue(), sensorValue);
+            return compareManager.getCompareOperation(condition.getOperation())
+                    .compare(condition.getValue(), sensorValue);
+
+        } catch (IllegalTypeCondition e) {
+            throw e;
+        } catch (NullPointerException e) {
+            throw new UnsupportedOperation("Не поддерживаемый тип операции % s".formatted(condition.getOperation()));
+        }
     }
 }

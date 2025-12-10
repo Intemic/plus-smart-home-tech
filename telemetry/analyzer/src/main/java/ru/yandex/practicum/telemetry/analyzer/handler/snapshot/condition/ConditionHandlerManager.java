@@ -1,6 +1,5 @@
 package ru.yandex.practicum.telemetry.analyzer.handler.snapshot.condition;
 
-
 import org.apache.avro.specific.SpecificRecordBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,8 +21,7 @@ public class ConditionHandlerManager {
                .collect(Collectors.toMap(ConditionHandler::getType, Function.identity()));
     }
 
-    public ConditionHandler<Condition, ? extends SpecificRecordBase> getHandler(
-            Class<? extends SpecificRecordBase> classType) {
+    public ConditionHandler getHandler(Class classType) {
         return handlerMap.get(classType);
     }
 }

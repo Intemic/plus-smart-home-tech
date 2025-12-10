@@ -1,6 +1,7 @@
 package ru.yandex.practicum.telemetry.analyzer.handler.snapshot.operation;
 
-@FunctionalInterface
-public interface CompareOperation<R, V> {
+public interface CompareOperation<R, V, T> {
+    T getType( );
+
     boolean compare(R reference , V value);
 }
