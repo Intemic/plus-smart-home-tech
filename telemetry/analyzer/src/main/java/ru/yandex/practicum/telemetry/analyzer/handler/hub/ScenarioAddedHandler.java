@@ -2,6 +2,7 @@ package ru.yandex.practicum.telemetry.analyzer.handler.hub;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceActionAvro;
 import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ScenarioAddedEventAvro;
@@ -25,6 +26,7 @@ public class ScenarioAddedHandler implements HubEventHandler<ScenarioAddedEventA
     }
 
     @Override
+    @Transactional
     public void handle(HubEventAvro event) {
         ScenarioAddedEventAvro scenarioAdded = (ScenarioAddedEventAvro) event.getPayload();
         Map<String, Condition> conditionMap = scenarioAdded.getConditions().stream()
