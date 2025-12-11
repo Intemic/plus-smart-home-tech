@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.telemetry.collector.config.CollectorConfig;
 import ru.yandex.practicum.telemetry.collector.config.KafkaClient;
-import ru.yandex.practicum.telemetry.collector.dto.sensor.*;
 import org.apache.kafka.clients.producer.Producer;
 
 import java.lang.reflect.Constructor;

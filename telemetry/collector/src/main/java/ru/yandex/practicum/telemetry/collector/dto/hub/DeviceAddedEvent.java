@@ -2,12 +2,14 @@ package ru.yandex.practicum.telemetry.collector.dto.hub;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import ru.yandex.practicum.telemetry.collector.utill.DeviceType;
 import ru.yandex.practicum.telemetry.collector.utill.HubEventType;
 
+@Builder
 @Getter
 @Setter
 @ToString(callSuper = true)

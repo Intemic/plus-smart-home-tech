@@ -6,7 +6,6 @@ import org.apache.kafka.clients.producer.Producer;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.telemetry.collector.config.CollectorConfig;
 import ru.yandex.practicum.telemetry.collector.config.KafkaClient;
-import ru.yandex.practicum.telemetry.collector.service.handler.sensor.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

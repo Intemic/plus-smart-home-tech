@@ -3,7 +3,6 @@ package ru.yandex.practicum.telemetry.collector.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.telemetry.collector.dto.hub.HubEvent;
 import ru.yandex.practicum.telemetry.collector.dto.sensor.SensorEvent;
