@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("analyzer.kafka")
 public class KafkaConfig {
     private String serverConfig;
-    KafkaConsumersConfig consumers;
+    private KafkaConsumersConfig consumers;
 
     @Getter
     @Setter
