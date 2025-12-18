@@ -38,7 +38,7 @@ services:
     image: postgres:16.1
     container_name: postgres
     ports:
-      - "6432:5432"
+      - "5432:5432"
     environment:
       - POSTGRES_PASSWORD=smart_home
       - POSTGRES_USER=smart_home
