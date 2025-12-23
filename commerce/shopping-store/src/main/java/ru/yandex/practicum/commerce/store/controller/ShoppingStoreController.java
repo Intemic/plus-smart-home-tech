@@ -13,7 +13,7 @@ import ru.yandex.practicum.commerce.store.service.ShoppingStoreService;
 @RestController
 @RequiredArgsConstructor
 public class ShoppingStoreController implements ShoppingStoreClient {
-    //private final ShoppingStoreService service;
+    private final ShoppingStoreService service;
 
     @Override
     public Page<ProductDto> getProducts(ProductCategory category, Pageable pageable) {
@@ -27,7 +27,7 @@ public class ShoppingStoreController implements ShoppingStoreClient {
 
     @Override
     public ProductDto createProduct(ProductDto product) {
-        return null;
+        return service.createProduct(product);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class ShoppingStoreController implements ShoppingStoreClient {
 
     @Override
     public boolean deleteProduct(String productId) {
-        return false;
+        return service.deleteProduct(productId);
     }
 
     @Override

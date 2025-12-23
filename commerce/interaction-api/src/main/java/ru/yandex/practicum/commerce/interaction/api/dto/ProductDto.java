@@ -17,6 +17,7 @@ public class ProductDto {
     private String productId;
     @NotBlank
     private String productName;
+    private String description;
     private String imageSrc;
     @NotNull
     private QuantityState quantityState;
