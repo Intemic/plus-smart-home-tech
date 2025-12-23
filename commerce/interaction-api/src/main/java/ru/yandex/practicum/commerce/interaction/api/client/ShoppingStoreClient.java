@@ -15,12 +15,11 @@ import ru.yandex.practicum.commerce.interaction.api.enum_.ProductCategory;
 @RequestMapping("/api/v1/shopping-store")
 public interface ShoppingStoreClient {
     @GetMapping
-    Page<ProductDto> getProducts(@NotNull ProductCategory category, Pageable pageable);
-
-    public
+    Page<ProductDto> getProducts(@RequestParam ProductCategory category,
+                                 @RequestParam Pageable pageable);
 
    @GetMapping("/{productId}")
-   ProductDto getProduct(@RequestParam String productId);
+   ProductDto getProduct(@PathVariable @NotBlank String productId);
 
     @PutMapping
   ProductDto createProduct(@RequestBody @Valid ProductDto product);
