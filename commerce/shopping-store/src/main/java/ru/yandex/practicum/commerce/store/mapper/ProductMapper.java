@@ -7,7 +7,7 @@ import ru.yandex.practicum.commerce.store.model.Product;
 import static java.util.UUID.randomUUID;
 
 @UtilityClass
-public class ShoppingStoreMapper {
+public class ProductMapper {
     public static Product mapToProduct(ProductDto productDto) {
         String productId = productDto.getProductId();
         // для нового устройства

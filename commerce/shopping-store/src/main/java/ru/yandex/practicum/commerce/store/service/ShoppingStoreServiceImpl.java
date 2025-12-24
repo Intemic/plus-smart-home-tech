@@ -9,30 +9,40 @@ import ru.yandex.practicum.commerce.interaction.api.dto.ProductDto;
 import ru.yandex.practicum.commerce.interaction.api.dto.SetProductQuantityStateRequest;
 import ru.yandex.practicum.commerce.interaction.api.enum_.ProductCategory;
 import ru.yandex.practicum.commerce.interaction.api.exception.NotFoundResource;
-import ru.yandex.practicum.commerce.store.mapper.ShoppingStoreMapper;
+import ru.yandex.practicum.commerce.store.mapper.ProductMapper;
+import ru.yandex.practicum.commerce.store.model.Product;
 import ru.yandex.practicum.commerce.store.storage.ShoppingStoreRepository;
+
+import java.util.Optional;
 
 
 @Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class ShoppingStoreServiceImpl implements ShoppingStoreService {
-   private ShoppingStoreRepository repository;
+   private final ShoppingStoreRepository repository;
 
     @Override
     public Page<ProductDto> getProducts(ProductCategory category, Pageable pageable) {
-        return null;
+        Page<Product> products = repository
+                .findAllByProductCategory(category, pageable);
+
+        return repository
+                .findAllByProductCategory(category, pageable)
+                .map(ProductMapper::mapToDto);
     }
 
     @Override
-    public ProductDto getProduct(String productId) {
-        return null;
+    public ProductDto getProduct(String productId) throws NotFoundResource {
+        Product product = repository.findById(productId)
+                .orElseThrow(() -> new NotFoundResource("Не найден продукт с id - %s".formatted(productId)));
+        return ProductMapper.mapToDto(product);
     }
 
     @Override
     @Transactional
     public ProductDto createProduct(ProductDto productDto) {
-        return ShoppingStoreMapper.mapToDto(repository.save(ShoppingStoreMapper.mapToProduct(productDto)));
+        return ProductMapper.mapToDto(repository.save(ProductMapper.mapToProduct(productDto)));
     }
 
     @Override
@@ -43,7 +53,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
 
     @Override
     @Transactional
-    public boolean deleteProduct(String productId) {
+    public boolean deleteProduct(String productId) throws NotFoundResource {
         repository.findById(productId)
                 .orElseThrow(() -> new NotFoundResource("Не найден продукт с id - %s".formatted(productId)));
         repository.deleteById(productId);
