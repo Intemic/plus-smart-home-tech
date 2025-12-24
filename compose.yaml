@@ -43,6 +43,8 @@ services:
       - POSTGRES_PASSWORD=smart_home
       - POSTGRES_USER=smart_home
       - POSTGRES_DB=smart_home
+    volumes:
+      - ./init-scripts:/docker-entrypoint-initdb.d
     healthcheck:
       test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
       timeout: 5s
