@@ -7,7 +7,9 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.commerce.interaction.api.enum_.ProductCategory;
 import ru.yandex.practicum.commerce.store.model.Product;
 
+import java.util.UUID;
+
 @Repository
-public interface ShoppingStoreRepository extends JpaRepository<Product, String> {
+public interface ShoppingStoreRepository extends JpaRepository<Product, UUID> { //JpaRepository<Product, String> {
     Page<Product> findAllByProductCategory(ProductCategory category, Pageable page);
 }

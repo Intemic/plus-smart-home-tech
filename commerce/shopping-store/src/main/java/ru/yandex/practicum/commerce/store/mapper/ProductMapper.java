@@ -4,18 +4,11 @@ import lombok.experimental.UtilityClass;
 import ru.yandex.practicum.commerce.interaction.api.dto.ProductDto;
 import ru.yandex.practicum.commerce.store.model.Product;
 
-import static java.util.UUID.randomUUID;
-
 @UtilityClass
 public class ProductMapper {
     public static Product mapToProduct(ProductDto productDto) {
-        String productId = productDto.getProductId();
-        // для нового устройства
-        if (productId == null || productId.isBlank())
-            productId = randomUUID().toString();
-
         return Product.builder()
-                .productId(productId)
+                .productId(productDto.getUUID())
                 .productName(productDto.getProductName())
                 .description(productDto.getDescription())
                 .imageSrc(productDto.getImageSrc())
@@ -28,7 +21,7 @@ public class ProductMapper {
 
     public static ProductDto mapToDto(Product product) {
         return ProductDto.builder()
-                .productId(product.getProductId())
+                .productId(product.getProductId().toString())
                 .productName(product.getProductName())
                 .description(product.getDescription())
                 .imageSrc(product.getImageSrc())
@@ -37,6 +30,31 @@ public class ProductMapper {
                 .productCategory(product.getProductCategory())
                 .price(product.getPrice())
                 .build();
+    }
+
+    public static Product updateProduct(Product product, ProductDto updateDto) {
+        if (updateDto.hasProductName())
+            product.setProductName(updateDto.getProductName());
+
+        if (updateDto.hasDescription())
+            product.setDescription(updateDto.getDescription());
+
+        if (updateDto.hasImageSrc())
+            product.setImageSrc(updateDto.getImageSrc());
+
+        if (updateDto.hasQuantityState())
+            product.setQuantityState(updateDto.getQuantityState());
+
+        if (updateDto.hasProductState())
+            product.setProductState(updateDto.getProductState());
+
+        if (updateDto.hasProductCategory())
+            product.setProductCategory(updateDto.getProductCategory());
+
+        if (updateDto.hasPrice())
+            product.setPrice(updateDto.getPrice());
+
+        return product;
     }
 
 }

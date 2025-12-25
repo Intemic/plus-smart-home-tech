@@ -6,6 +6,8 @@ import ru.yandex.practicum.commerce.interaction.api.enum_.ProductCategory;
 import ru.yandex.practicum.commerce.interaction.api.enum_.ProductState;
 import ru.yandex.practicum.commerce.interaction.api.enum_.QuantityState;
 
+import java.util.UUID;
+
 @Builder
 @Entity
 @Table(name = "products")
@@ -15,7 +17,8 @@ import ru.yandex.practicum.commerce.interaction.api.enum_.QuantityState;
 @AllArgsConstructor
 public class Product {
     @Id
-    private String productId;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID productId;
 
     @Column(name = "product_name")
     private String productName;
@@ -38,4 +41,19 @@ public class Product {
     private ProductCategory productCategory;
 
     private double price;
+
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "productId='" + productId + '\'' +
+                ", productName='" + productName + '\'' +
+                ", description='" + description + '\'' +
+                ", imageSrc='" + imageSrc + '\'' +
+                ", quantityState=" + quantityState +
+                ", productState=" + productState +
+                ", productCategory=" + productCategory +
+                ", price=" + price +
+                '}';
+    }
 }

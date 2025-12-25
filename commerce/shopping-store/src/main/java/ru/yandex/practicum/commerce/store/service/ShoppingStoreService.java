@@ -7,16 +7,20 @@ import ru.yandex.practicum.commerce.interaction.api.dto.SetProductQuantityStateR
 import ru.yandex.practicum.commerce.interaction.api.enum_.ProductCategory;
 import ru.yandex.practicum.commerce.interaction.api.exception.NotFoundResource;
 
+import java.util.UUID;
+
 public interface ShoppingStoreService {
     public Page<ProductDto> getProducts(ProductCategory category, Pageable pageable);
 
-    public ProductDto getProduct(String productId) throws NotFoundResource;
+    public ProductDto getProduct(UUID productId) throws NotFoundResource;
 
     public ProductDto createProduct(ProductDto product);
 
     public ProductDto updateProduct(ProductDto product);
 
-    public boolean deleteProduct(String productId) throws NotFoundResource;
+    public boolean deleteProduct(UUID productId) throws NotFoundResource;
 
-    public boolean changeState(SetProductQuantityStateRequest stateRequest);
+    public boolean changeState(SetProductQuantityStateRequest stateRequest) throws NotFoundResource;
+
+    UUID getUUID(String string);
 }
