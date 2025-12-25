@@ -1,15 +1,19 @@
 package ru.yandex.practicum.commerce.store.controller;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.commerce.interaction.api.dto.ProductDto;
 import ru.yandex.practicum.commerce.interaction.api.dto.SetProductQuantityStateRequest;
 import ru.yandex.practicum.commerce.interaction.api.enum_.ProductCategory;
+import ru.yandex.practicum.commerce.interaction.api.enum_.QuantityState;
 import ru.yandex.practicum.commerce.interaction.api.exception.NotFoundResource;
 import ru.yandex.practicum.commerce.interaction.api.interface_.ShoppingStoreOperation;
 import ru.yandex.practicum.commerce.store.service.ShoppingStoreService;
@@ -42,19 +46,20 @@ public class ShoppingStoreController implements ShoppingStoreOperation {
 
     @Override
     public ProductDto updateProduct(ProductDto product) {
-        return null;
+        return service.updateProduct(product);
     }
 
     @Override
     public boolean deleteProduct(String productId) throws NotFoundResource {
-        String uuid =  productId.replace("\"", "").trim();
+        String uuid = productId.replaceAll("\"", "").trim();
         return service.deleteProduct(service.getUUID(uuid));
     }
 
     @Override
-    public boolean changeState(SetProductQuantityStateRequest stateRequest) throws NotFoundResource {
-        return service.changeState(stateRequest);
+    public boolean changeState(String productId, QuantityState quantityState) throws NotFoundResource {
+        return service.changeState(service.getUUID(productId), quantityState);
     }
+
 
     private Pageable getPageable(int page,
                                  int size,

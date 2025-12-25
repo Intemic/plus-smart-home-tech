@@ -12,6 +12,7 @@ import ru.yandex.practicum.commerce.interaction.api.dto.ProductDto;
 import ru.yandex.practicum.commerce.interaction.api.dto.SetProductQuantityStateRequest;
 import ru.yandex.practicum.commerce.interaction.api.enum_.ProductCategory;
 import ru.yandex.practicum.commerce.interaction.api.enum_.ProductState;
+import ru.yandex.practicum.commerce.interaction.api.enum_.QuantityState;
 import ru.yandex.practicum.commerce.interaction.api.exception.NotFoundResource;
 import ru.yandex.practicum.commerce.store.mapper.ProductMapper;
 import ru.yandex.practicum.commerce.store.model.Product;
@@ -88,13 +89,13 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
 
     @Override
     @Transactional
-    public boolean changeState(SetProductQuantityStateRequest stateRequest) throws NotFoundResource {
-        log.info("Изменение статуса товара, новый статус - %s".formatted(stateRequest));
-        Product product = repository.findById(getUUID(stateRequest.getProductId()))
+    public boolean changeState(UUID productId, QuantityState quantityState) throws NotFoundResource {
+        log.info("Изменение статуса товара, новый статус - %s".formatted(quantityState));
+        Product product = repository.findById(productId)
                 .orElseThrow(() -> new NotFoundResource("Не найден продукт с id - %s"
-                        .formatted(stateRequest.getProductId())));
+                        .formatted(productId)));
         log.info("Данные до изменения - %s".formatted(convertToString(product)));
-        product.setQuantityState(stateRequest.getQuantityState());
+        product.setQuantityState(quantityState);
         product = repository.save(product);
         log.info("Обновленные данные - %s".formatted(convertToString(product)));
         return true;

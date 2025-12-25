@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import ru.yandex.practicum.commerce.interaction.api.dto.ProductDto;
 import ru.yandex.practicum.commerce.interaction.api.dto.SetProductQuantityStateRequest;
 import ru.yandex.practicum.commerce.interaction.api.enum_.ProductCategory;
+import ru.yandex.practicum.commerce.interaction.api.enum_.QuantityState;
 import ru.yandex.practicum.commerce.interaction.api.exception.NotFoundResource;
 
 import java.util.UUID;
@@ -20,7 +21,7 @@ public interface ShoppingStoreService {
 
     public boolean deleteProduct(UUID productId) throws NotFoundResource;
 
-    public boolean changeState(SetProductQuantityStateRequest stateRequest) throws NotFoundResource;
+    public boolean changeState(UUID productId, QuantityState quantityState) throws NotFoundResource;
 
     UUID getUUID(String string);
 }

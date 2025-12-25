@@ -12,7 +12,7 @@ spring:
 
   datasource:
     driverClassName: "org.postgresql.Driver"
-    url: "jdbc:postgresql://localhost:5432/shopping_store"
+    url: "jdbc:postgresql://localhost:5432/shopping_cart"
     username: ${POSTGRES_USER:smart_home}
     password: ${POSTGRES_PASSWORD:smart_home}
 
