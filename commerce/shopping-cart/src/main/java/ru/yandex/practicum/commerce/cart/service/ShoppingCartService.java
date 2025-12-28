@@ -1,5 +1,6 @@
 package ru.yandex.practicum.commerce.cart.service;
 
+import ru.yandex.practicum.commerce.interaction.api.dto.ChangeProductQuantityRequest;
 import ru.yandex.practicum.commerce.interaction.api.dto.ShoppingCartDto;
 import ru.yandex.practicum.commerce.interaction.api.exception.*;
 
@@ -20,6 +21,11 @@ public interface ShoppingCartService {
 
     ShoppingCartDto removeProducts(String username,
                                    List<String> productIds)
+            throws NotAuthorizedUserException,
+            NoProductsInShoppingCartException,
+            NotFoundResource;
+
+    ShoppingCartDto changeQuantity(String username, ChangeProductQuantityRequest changeRequest)
             throws NotAuthorizedUserException,
             NoProductsInShoppingCartException,
             NotFoundResource;

@@ -31,11 +31,13 @@ public interface ShoppingCartOperation {
     ShoppingCartDto removeProducts(@RequestParam String username,
                                    @NotNull List<String> productIds)
             throws NotAuthorizedUserException,
-            NoProductsInShoppingCartException;
+            NoProductsInShoppingCartException,
+            NotFoundResource;
 
     @PostMapping("/change-quantity")
     ShoppingCartDto changeQuantity(@RequestParam String username,
                                    @RequestBody @Valid ChangeProductQuantityRequest changeRequest)
             throws NotAuthorizedUserException,
-            NoProductsInShoppingCartException;
+            NoProductsInShoppingCartException,
+            NotFoundResource;
 }

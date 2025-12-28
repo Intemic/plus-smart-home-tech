@@ -1,9 +1,7 @@
 package ru.yandex.practicum.commerce.cart.model;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import ru.yandex.practicum.commerce.interaction.api.enum_.CartState;
 
 import java.util.Map;
@@ -13,6 +11,8 @@ import java.util.UUID;
 @Entity(name = "cards")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

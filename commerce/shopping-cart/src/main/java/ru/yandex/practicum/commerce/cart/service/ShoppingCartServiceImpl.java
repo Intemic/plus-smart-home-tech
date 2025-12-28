@@ -6,14 +6,14 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.commerce.cart.mapper.CartMapper;
 import ru.yandex.practicum.commerce.cart.model.Cart;
 import ru.yandex.practicum.commerce.cart.storage.ShoppingCartRepository;
+import ru.yandex.practicum.commerce.interaction.api.dto.ChangeProductQuantityRequest;
 import ru.yandex.practicum.commerce.interaction.api.dto.ShoppingCartDto;
 import ru.yandex.practicum.commerce.interaction.api.enum_.CartState;
 import ru.yandex.practicum.commerce.interaction.api.exception.*;
+import ru.yandex.practicum.commerce.interaction.api.utill.Convert;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -70,6 +70,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                         return currentQuantity + entry.getValue();
                     });
 
+            // TODO: нужна проверка наличия на складе
             // проверим на наличие
 //           if (quantity <= 0)
 //               throw new NoQuantityAvailable("");
@@ -98,7 +99,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public ShoppingCartDto removeProducts(String username, List<String> productIds)
+    public ShoppingCartDto removeProducts(String username, List<String> products)
             throws NotAuthorizedUserException,
             NoProductsInShoppingCartException,
             NotFoundResource {
@@ -111,13 +112,47 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         if (cart == null)
             throw new NotFoundResource("Не найдена корзина для пользователя - %s".formatted(username));
 
-        List<> productIds.stream()
-                .filter( product -> cart.getProducts().get(product) != null)
-                .map(product -> cart.getProducts().remove(product))
-                .toList()
+        Set<UUID> setUUID = products.stream()
+                .map(Convert::converStringToUUID)
+                .filter(product -> cart.getProducts().containsKey(product))
+                .collect(Collectors.toSet());
+        if (setUUID.isEmpty())
+            throw new NoProductsInShoppingCartException("Отсутствуют продукты для удаления");
+
+        setUUID.forEach(uuid -> cart.getProducts().remove(uuid));
+        log.info("Информация обновлена");
 
         return CartMapper.mapToDto(repository.save(cart));
     }
 
+    @Override
+    public ShoppingCartDto changeQuantity(String username, ChangeProductQuantityRequest changeRequest)
+            throws NotAuthorizedUserException,
+            NoProductsInShoppingCartException,
+            NotFoundResource {
+        log.info("Изменяем кол-во");
+        if (username == null || username.isBlank())
+            throw new NotAuthorizedUserException("Не корректное имя пользователя");
+
+        Cart cart = getCartInner(username);
+        // нет корзины
+        if (cart == null)
+            throw new NotFoundResource("Не найдена корзина для пользователя - %s".formatted(username));
+
+        UUID uuid = Convert.converStringToUUID(changeRequest.getProductId());
+
+        if (!cart.getProducts().containsKey(uuid))
+            throw new NoProductsInShoppingCartException(
+                    "Продукт %s отсутствует в корзине".formatted(changeRequest.getProductId()));
+
+        cart.getProducts().compute(uuid, (key, quantity) -> changeRequest.getNewQuantity());
+
+        // TODO: нужна проверка наличия на складе
+
+        cart = repository.save(cart);
+        log.info("Количество изменено");
+
+        return CartMapper.mapToDto(cart);
+    }
 
 }
