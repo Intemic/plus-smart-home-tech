@@ -1,7 +1,9 @@
 package ru.yandex.practicum.commerce.cart.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.yandex.practicum.commerce.cart.service.ShoppingCartService;
 import ru.yandex.practicum.commerce.interaction.api.dto.ChangeProductQuantityRequest;
 import ru.yandex.practicum.commerce.interaction.api.dto.ShoppingCartDto;
 import ru.yandex.practicum.commerce.interaction.api.exception.NoProductsInShoppingCartException;
@@ -13,10 +15,13 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/shopping-cart")
+@RequiredArgsConstructor
 public class ShoppingCartController implements ShoppingCartOperation {
+    private final ShoppingCartService service;
+
     @Override
     public ShoppingCartDto getCart(String username) throws NotAuthorizedUserException {
-        return null;
+        return service.getCart(username);
     }
 
     @Override
