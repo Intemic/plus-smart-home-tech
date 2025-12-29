@@ -13,6 +13,6 @@ public class AddProductToWarehouseRequest {
     @NotBlank
     private String productId;
     @NotNull
-    private Double quantity;
+    private Integer quantity;
 
 }

@@ -27,23 +27,23 @@ public class ShoppingCartController implements ShoppingCartOperation {
     @Override
     public ShoppingCartDto addProducts(String username, Map<String, Integer> products)
             throws NotAuthorizedUserException {
-        return null;
+        return service.addProducts(username, products);
     }
 
     @Override
     public void deleteCart(String username) throws NotAuthorizedUserException {
-
+        service.deleteCart(username);
     }
 
     @Override
     public ShoppingCartDto removeProducts(String username, List<String> productIds)
             throws NotAuthorizedUserException, NoProductsInShoppingCartException {
-        return null;
+        return service.removeProducts(username, productIds);
     }
 
     @Override
     public ShoppingCartDto changeQuantity(String username, ChangeProductQuantityRequest changeRequest)
             throws NotAuthorizedUserException, NoProductsInShoppingCartException {
-        return null;
+        return service.changeQuantity(username, changeRequest);
     }
 }

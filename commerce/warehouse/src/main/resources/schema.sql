@@ -3,15 +3,16 @@ CREATE TABLE IF NOT EXISTS ware_houses (
     address_country VARCHAR(50) NOT NULL,
     address_city VARCHAR(50) NOT NULL,
     address_street VARCHAR(150) NOT NULL,
+    address_house VARCHAR(50) NOT NULL,
     address_flat VARCHAR(50)
 );
 
 CREATE TABLE IF NOT EXISTS products (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    id UUID PRIMARY KEY,
     fragile boolean,
     dimension_width double precision,
     dimension_height double precision,
-    dimension_weight double precision,
+    dimension_depth double precision,
     weight double precision
 );
 

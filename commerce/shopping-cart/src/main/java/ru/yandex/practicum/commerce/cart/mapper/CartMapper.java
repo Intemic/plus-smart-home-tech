@@ -19,6 +19,7 @@ public class CartMapper {
     }
 
     public static Map<String, Integer> mapProductsToDto(Map<UUID, Integer> products) {
+       // return products == null || products.isEmpty() ? Map.of() : products.entrySet().stream()
         return products.entrySet().stream()
                 .collect(Collectors.toMap(
                         entity -> entity.getKey().toString(),

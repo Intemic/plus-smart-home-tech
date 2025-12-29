@@ -28,24 +28,24 @@ public class WareHouseController implements WarehouseOperation {
     @Override
     public void addProduct(NewProductInWarehouseRequest newProduct)
             throws SpecifiedProductAlreadyInWarehouseException {
-
+        service.addProduct(wareHouse, newProduct);
     }
 
     @Override
     public BookedProductsDto checkAvailability(ShoppingCartDto cart)
             throws ProductInShoppingCartLowQuantityInWarehouse {
-        return null;
+        return service.checkAvailability(wareHouse, cart);
     }
 
     @Override
     public void addProductQuantity(AddProductToWarehouseRequest productQuantity)
             throws NoSpecifiedProductInWarehouseException {
-
+       service.addProductQuantity(wareHouse, productQuantity);
     }
 
     @Override
     public AddressDto getAddress() {
-        return null;
+        return service.getAddress(wareHouse);
     }
 
     private AddressDto getAddressWareHouse() {

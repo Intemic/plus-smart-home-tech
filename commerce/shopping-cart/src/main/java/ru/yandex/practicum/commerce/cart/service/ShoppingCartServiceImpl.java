@@ -64,11 +64,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
         Map<UUID, Integer> mapProducts = CartMapper.mapProductsFromDto(products);
         for (Map.Entry<UUID, Integer> entry : mapProducts.entrySet()) {
-            Integer quantity = cart.getProducts().computeIfPresent(
-                    entry.getKey(),
-                    (productId, currentQuantity) -> {
-                        return currentQuantity + entry.getValue();
-                    });
+            cart.getProducts().putIfAbsent(entry.getKey(), 0);
+            cart.getProducts().compute(entry.getKey(), (k, v) -> entry.getValue());
 
             // TODO: нужна проверка наличия на складе
             // проверим на наличие

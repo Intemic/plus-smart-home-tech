@@ -4,11 +4,12 @@ import jakarta.persistence.*;
 import lombok.*;
 import ru.yandex.practicum.commerce.interaction.api.enum_.CartState;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 @Builder
-@Entity(name = "cards")
+@Entity(name = "carts")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,5 +29,6 @@ public class Cart {
     @CollectionTable(name = "cart_products", joinColumns = @JoinColumn(name = "cart_id"))
     @MapKeyColumn(name = "product_id")
     @Column(name = "quantity")
-    private Map<UUID, Integer> products;
+    private final Map<UUID, Integer> products = new HashMap<>();
+    //private Map<UUID, Integer> products;
 }

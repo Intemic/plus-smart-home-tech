@@ -29,7 +29,7 @@ public interface ShoppingCartOperation {
 
     @PostMapping("/remove")
     ShoppingCartDto removeProducts(@RequestParam String username,
-                                   @NotNull List<String> productIds)
+                                   @RequestBody @NotNull List<String> productIds)
             throws NotAuthorizedUserException,
             NoProductsInShoppingCartException,
             NotFoundResource;

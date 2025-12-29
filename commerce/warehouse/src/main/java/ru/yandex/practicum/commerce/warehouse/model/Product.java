@@ -1,14 +1,12 @@
 package ru.yandex.practicum.commerce.warehouse.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
 
+@Builder
 @Entity(name = "products")
 @Getter
 @Setter
@@ -24,7 +22,7 @@ public class Product {
     @AttributeOverrides({
             @AttributeOverride(name = "width", column = @Column(name = "dimension_width")),
             @AttributeOverride(name = "height", column = @Column(name = "dimension_height")),
-            @AttributeOverride(name = "weight", column = @Column(name = "dimension_weight")),
+            @AttributeOverride(name = "depth", column = @Column(name = "dimension_depth")),
     })
     private Dimension dimension;
 
