@@ -61,7 +61,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
 
     @Override
     @Transactional
-    public ProductDto updateProduct(ProductDto product) {
+    public ProductDto updateProduct(ProductDto product) throws NotFoundResource {
         log.info("Обновление данных продукта новые данные: %s".formatted(convertToString(product)));
         Product productOld = repository.findById(product.getUUID())
                 .orElseThrow(() -> new NotFoundResource("Не найден продукт с id - %s"

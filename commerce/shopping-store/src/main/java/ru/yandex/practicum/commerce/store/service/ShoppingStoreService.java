@@ -17,7 +17,7 @@ public interface ShoppingStoreService {
 
     public ProductDto createProduct(ProductDto product);
 
-    public ProductDto updateProduct(ProductDto product);
+    public ProductDto updateProduct(ProductDto product) throws NotFoundResource;
 
     public boolean deleteProduct(UUID productId) throws NotFoundResource;
 

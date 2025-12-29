@@ -1,7 +1,9 @@
 package ru.yandex.practicum.commerce.interaction.api.interface_;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.commerce.interaction.api.dto.ChangeProductQuantityRequest;
 import ru.yandex.practicum.commerce.interaction.api.dto.ShoppingCartDto;
@@ -17,7 +19,7 @@ public interface ShoppingCartOperation {
 
     @PutMapping
     ShoppingCartDto addProducts(@RequestParam String username,
-                                @RequestBody @NotNull Map<String, Integer> products)
+                                @RequestBody @NotNull Map<@NotNull String, @NotNull @Positive Integer> products)
             throws NotAuthorizedUserException,
             NoQuantityAvailable,
             InvalidOperation;
@@ -29,14 +31,14 @@ public interface ShoppingCartOperation {
 
     @PostMapping("/remove")
     ShoppingCartDto removeProducts(@RequestParam String username,
-                                   @RequestBody @NotNull List<String> productIds)
+                                   @RequestBody @Valid @NotNull List<@NotBlank String> productIds)
             throws NotAuthorizedUserException,
             NoProductsInShoppingCartException,
             NotFoundResource;
 
     @PostMapping("/change-quantity")
     ShoppingCartDto changeQuantity(@RequestParam String username,
-                                   @RequestBody @Valid ChangeProductQuantityRequest changeRequest)
+                                   @RequestBody @Valid @NotNull ChangeProductQuantityRequest changeRequest)
             throws NotAuthorizedUserException,
             NoProductsInShoppingCartException,
             NotFoundResource;

@@ -6,7 +6,7 @@ import ru.yandex.practicum.commerce.interaction.api.dto.*;
 import ru.yandex.practicum.commerce.interaction.api.exception.NoSpecifiedProductInWarehouseException;
 import ru.yandex.practicum.commerce.interaction.api.exception.ProductInShoppingCartLowQuantityInWarehouse;
 import ru.yandex.practicum.commerce.interaction.api.exception.SpecifiedProductAlreadyInWarehouseException;
-import ru.yandex.practicum.commerce.interaction.api.interface_.WarehouseOperation;
+import ru.yandex.practicum.commerce.interaction.api.interface_.WareHouseOperation;
 import ru.yandex.practicum.commerce.warehouse.service.WareHouseService;
 
 import java.security.SecureRandom;
@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/warehouse")
-public class WareHouseController implements WarehouseOperation {
+public class WareHouseController implements WareHouseOperation {
     private final WareHouseService service;
     private final UUID wareHouse;
 

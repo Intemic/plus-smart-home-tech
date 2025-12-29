@@ -29,7 +29,8 @@ public interface ShoppingStoreOperation {
     ProductDto createProduct(@RequestBody @Validated(ProductStrategy.Create.class) @Valid ProductDto product);
 
     @PostMapping
-    ProductDto updateProduct(@RequestBody @Validated(ProductStrategy.Update.class) @Valid ProductDto product);
+    ProductDto updateProduct(@RequestBody @Validated(ProductStrategy.Update.class) @Valid ProductDto product)
+            throws NotFoundResource;
 
     @PostMapping("/removeProductFromStore")
     boolean deleteProduct(@RequestBody @NotBlank String productId) throws NotFoundResource;

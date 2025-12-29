@@ -11,7 +11,7 @@ import ru.yandex.practicum.commerce.interaction.api.exception.NotFoundResource;
 import ru.yandex.practicum.commerce.interaction.api.exception.ProductInShoppingCartLowQuantityInWarehouse;
 import ru.yandex.practicum.commerce.interaction.api.exception.SpecifiedProductAlreadyInWarehouseException;
 
-public interface WarehouseOperation {
+public interface WareHouseOperation {
     @PutMapping
     void addProduct(@RequestBody @Valid NewProductInWarehouseRequest newProduct)
             throws SpecifiedProductAlreadyInWarehouseException,

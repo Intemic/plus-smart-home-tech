@@ -3,9 +3,11 @@ package ru.yandex.practicum.commerce.cart.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.commerce.cart.mapper.CartMapper;
 import ru.yandex.practicum.commerce.cart.model.Cart;
 import ru.yandex.practicum.commerce.cart.storage.ShoppingCartRepository;
+import ru.yandex.practicum.commerce.interaction.api.client.WareHouseClient;
 import ru.yandex.practicum.commerce.interaction.api.dto.ChangeProductQuantityRequest;
 import ru.yandex.practicum.commerce.interaction.api.dto.ShoppingCartDto;
 import ru.yandex.practicum.commerce.interaction.api.enum_.CartState;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final ShoppingCartRepository repository;
+    private final WareHouseClient wareHouseClient;
 
     private Cart getCartInner(String username) throws NotAuthorizedUserException {
         log.info("Получаем корзину для пользователя");
@@ -66,13 +69,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         for (Map.Entry<UUID, Integer> entry : mapProducts.entrySet()) {
             cart.getProducts().putIfAbsent(entry.getKey(), 0);
             cart.getProducts().compute(entry.getKey(), (k, v) -> entry.getValue());
-
-            // TODO: нужна проверка наличия на складе
-            // проверим на наличие
-//           if (quantity <= 0)
-//               throw new NoQuantityAvailable("");
         }
-        ;
+
+        // проверим на наличие
+        wareHouseClient.checkAvailability(CartMapper.mapToDto(cart));
 
         cart = repository.save(cart);
         log.info("Данные о продуктах обновлены");
@@ -80,6 +80,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
+    @Transactional
     public void deleteCart(String username) throws NotAuthorizedUserException, NotFoundResource {
         log.info("Деактивируем корзину");
         if (username == null || username.isBlank())
@@ -96,6 +97,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
+    @Transactional
     public ShoppingCartDto removeProducts(String username, List<String> products)
             throws NotAuthorizedUserException,
             NoProductsInShoppingCartException,
@@ -144,12 +146,17 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
         cart.getProducts().compute(uuid, (key, quantity) -> changeRequest.getNewQuantity());
 
-        // TODO: нужна проверка наличия на складе
+        // проверим на наличие
+        wareHouseClient.checkAvailability(CartMapper.mapToDto(cart));
 
         cart = repository.save(cart);
         log.info("Количество изменено");
 
         return CartMapper.mapToDto(cart);
+    }
+
+    private Cart updateCart(Cart cart) {
+        return null;
     }
 
 }
