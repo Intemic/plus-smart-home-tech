@@ -12,7 +12,6 @@ import ru.yandex.practicum.commerce.interaction.api.dto.ChangeProductQuantityReq
 import ru.yandex.practicum.commerce.interaction.api.dto.ShoppingCartDto;
 import ru.yandex.practicum.commerce.interaction.api.enum_.CartState;
 import ru.yandex.practicum.commerce.interaction.api.exception.*;
-import ru.yandex.practicum.commerce.interaction.api.utill.Convert;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -51,7 +50,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public ShoppingCartDto addProducts(String username, Map<String, Integer> products)
+    public ShoppingCartDto addProducts(String username, Map<UUID, Integer> products)
             throws NotAuthorizedUserException,
             NoQuantityAvailable,
             InvalidOperation {
@@ -65,8 +64,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         if (cart.getState().equals(CartState.DEACTIVE))
             throw new InvalidOperation("Корзина не доступна для изменения");
 
-        Map<UUID, Integer> mapProducts = CartMapper.mapProductsFromDto(products);
-        for (Map.Entry<UUID, Integer> entry : mapProducts.entrySet()) {
+        for (Map.Entry<UUID, Integer> entry : products.entrySet()) {
             cart.getProducts().putIfAbsent(entry.getKey(), 0);
             cart.getProducts().compute(entry.getKey(), (k, v) -> entry.getValue());
         }
@@ -98,7 +96,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     @Transactional
-    public ShoppingCartDto removeProducts(String username, List<String> products)
+    public ShoppingCartDto removeProducts(String username, List<UUID> products)
             throws NotAuthorizedUserException,
             NoProductsInShoppingCartException,
             NotFoundResource {
@@ -112,7 +110,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             throw new NotFoundResource("Не найдена корзина для пользователя - %s".formatted(username));
 
         Set<UUID> setUUID = products.stream()
-                .map(Convert::converStringToUUID)
                 .filter(product -> cart.getProducts().containsKey(product))
                 .collect(Collectors.toSet());
         if (setUUID.isEmpty())
@@ -138,13 +135,11 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         if (cart == null)
             throw new NotFoundResource("Не найдена корзина для пользователя - %s".formatted(username));
 
-        UUID uuid = Convert.converStringToUUID(changeRequest.getProductId());
-
-        if (!cart.getProducts().containsKey(uuid))
+        if (!cart.getProducts().containsKey(changeRequest.getProductId()))
             throw new NoProductsInShoppingCartException(
                     "Продукт %s отсутствует в корзине".formatted(changeRequest.getProductId()));
 
-        cart.getProducts().compute(uuid, (key, quantity) -> changeRequest.getNewQuantity());
+        cart.getProducts().compute(changeRequest.getProductId(), (key, quantity) -> changeRequest.getNewQuantity());
 
         // проверим на наличие
         wareHouseClient.checkAvailability(CartMapper.mapToDto(cart));

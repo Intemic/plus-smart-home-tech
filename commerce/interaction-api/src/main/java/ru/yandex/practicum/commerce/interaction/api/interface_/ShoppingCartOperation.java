@@ -11,6 +11,7 @@ import ru.yandex.practicum.commerce.interaction.api.exception.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public interface ShoppingCartOperation {
     @GetMapping
@@ -19,7 +20,7 @@ public interface ShoppingCartOperation {
 
     @PutMapping
     ShoppingCartDto addProducts(@RequestParam String username,
-                                @RequestBody @NotNull Map<@NotNull String, @NotNull @Positive Integer> products)
+                                @RequestBody @NotNull Map<@NotNull UUID, @NotNull @Positive Integer> products)
             throws NotAuthorizedUserException,
             NoQuantityAvailable,
             InvalidOperation;
@@ -31,7 +32,7 @@ public interface ShoppingCartOperation {
 
     @PostMapping("/remove")
     ShoppingCartDto removeProducts(@RequestParam String username,
-                                   @RequestBody @Valid @NotNull List<@NotBlank String> productIds)
+                                   @RequestBody @Valid @NotNull List<@NotNull UUID> productIds)
             throws NotAuthorizedUserException,
             NoProductsInShoppingCartException,
             NotFoundResource;

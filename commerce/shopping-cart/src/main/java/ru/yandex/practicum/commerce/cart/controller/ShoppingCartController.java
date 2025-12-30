@@ -12,6 +12,7 @@ import ru.yandex.practicum.commerce.interaction.api.interface_.ShoppingCartOpera
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/shopping-cart")
@@ -25,7 +26,7 @@ public class ShoppingCartController implements ShoppingCartOperation {
     }
 
     @Override
-    public ShoppingCartDto addProducts(String username, Map<String, Integer> products)
+    public ShoppingCartDto addProducts(String username, Map<UUID, Integer> products)
             throws NotAuthorizedUserException {
         return service.addProducts(username, products);
     }
@@ -36,7 +37,7 @@ public class ShoppingCartController implements ShoppingCartOperation {
     }
 
     @Override
-    public ShoppingCartDto removeProducts(String username, List<String> productIds)
+    public ShoppingCartDto removeProducts(String username, List<UUID> productIds)
             throws NotAuthorizedUserException, NoProductsInShoppingCartException {
         return service.removeProducts(username, productIds);
     }

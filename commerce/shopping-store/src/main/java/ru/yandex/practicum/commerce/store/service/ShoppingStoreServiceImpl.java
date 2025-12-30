@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.commerce.interaction.api.dto.ProductDto;
-import ru.yandex.practicum.commerce.interaction.api.dto.SetProductQuantityStateRequest;
 import ru.yandex.practicum.commerce.interaction.api.enum_.ProductCategory;
 import ru.yandex.practicum.commerce.interaction.api.enum_.ProductState;
 import ru.yandex.practicum.commerce.interaction.api.enum_.QuantityState;
@@ -63,7 +62,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     @Transactional
     public ProductDto updateProduct(ProductDto product) throws NotFoundResource {
         log.info("Обновление данных продукта новые данные: %s".formatted(convertToString(product)));
-        Product productOld = repository.findById(product.getUUID())
+        Product productOld = repository.findById(product.getProductId())
                 .orElseThrow(() -> new NotFoundResource("Не найден продукт с id - %s"
                         .formatted(product.getProductId())));
         log.info("Старые данные - %s".formatted(convertToString(productOld)));
@@ -107,18 +106,6 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
             return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
             return object.toString();
-        }
-    }
-
-    @Override
-    public UUID getUUID(String string) {
-        if (string == null || string.isEmpty()) {
-            return null;
-        }
-        try {
-            return UUID.fromString(string);
-        } catch (IllegalArgumentException e) {
-            return null;
         }
     }
 }

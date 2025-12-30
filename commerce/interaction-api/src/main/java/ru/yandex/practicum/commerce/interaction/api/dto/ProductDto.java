@@ -17,8 +17,8 @@ import java.util.UUID;
 @Getter
 @Setter
 public class ProductDto {
-    @NotBlank
-    private String productId;
+    @NotNull(groups = ProductStrategy.Update.class)
+    private UUID productId;
 
     @NotBlank(groups = ProductStrategy.Create.class)
     private String productName;
@@ -69,14 +69,4 @@ public class ProductDto {
         return (price != null);
     }
 
-    public UUID getUUID() {
-        if (productId == null || productId.isEmpty()) {
-            return null;
-        }
-        try {
-            return UUID.fromString(productId);
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
-    }
 }

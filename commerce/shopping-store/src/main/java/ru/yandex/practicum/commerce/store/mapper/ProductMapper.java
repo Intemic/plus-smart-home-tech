@@ -8,7 +8,7 @@ import ru.yandex.practicum.commerce.store.model.Product;
 public class ProductMapper {
     public static Product mapToProduct(ProductDto productDto) {
         return Product.builder()
-                .productId(productDto.getUUID())
+                .productId(productDto.getProductId())
                 .productName(productDto.getProductName())
                 .description(productDto.getDescription())
                 .imageSrc(productDto.getImageSrc())
@@ -21,7 +21,7 @@ public class ProductMapper {
 
     public static ProductDto mapToDto(Product product) {
         return ProductDto.builder()
-                .productId(product.getProductId().toString())
+                .productId(product.getProductId())
                 .productName(product.getProductName())
                 .description(product.getDescription())
                 .imageSrc(product.getImageSrc())

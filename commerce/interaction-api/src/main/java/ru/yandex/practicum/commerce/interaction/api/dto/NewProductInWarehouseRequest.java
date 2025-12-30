@@ -6,12 +6,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Builder
 @Setter
 @Getter
 public class NewProductInWarehouseRequest {
     @NotNull
-    private String productId;
+    private UUID productId;
     private boolean fragile;
     @NotNull
     private DimensionDto dimension;

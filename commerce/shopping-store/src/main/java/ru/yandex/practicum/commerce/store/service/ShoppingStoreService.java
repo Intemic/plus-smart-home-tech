@@ -22,6 +22,4 @@ public interface ShoppingStoreService {
     public boolean deleteProduct(UUID productId) throws NotFoundResource;
 
     public boolean changeState(UUID productId, QuantityState quantityState) throws NotFoundResource;
-
-    UUID getUUID(String string);
 }

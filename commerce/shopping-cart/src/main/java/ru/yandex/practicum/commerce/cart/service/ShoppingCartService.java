@@ -6,11 +6,12 @@ import ru.yandex.practicum.commerce.interaction.api.exception.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public interface ShoppingCartService {
     ShoppingCartDto getCart(String username) throws NotAuthorizedUserException;
 
-    ShoppingCartDto addProducts(String username, Map<String, Integer> products)
+    ShoppingCartDto addProducts(String username, Map<UUID, Integer> products)
             throws NotAuthorizedUserException,
             NoQuantityAvailable,
             InvalidOperation;
@@ -20,7 +21,7 @@ public interface ShoppingCartService {
             NotFoundResource;
 
     ShoppingCartDto removeProducts(String username,
-                                   List<String> productIds)
+                                   List<UUID> productIds)
             throws NotAuthorizedUserException,
             NoProductsInShoppingCartException,
             NotFoundResource;

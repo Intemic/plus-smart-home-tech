@@ -6,12 +6,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Builder
 @Getter
 @Setter
 public class AddProductToWarehouseRequest {
-    @NotBlank
-    private String productId;
+    @NotNull
+    private UUID productId;
     @NotNull
     private Integer quantity;
 

@@ -14,6 +14,8 @@ import ru.yandex.practicum.commerce.interaction.api.exception.NotFoundResource;
 import ru.yandex.practicum.commerce.interaction.api.interface_.ShoppingStoreOperation;
 import ru.yandex.practicum.commerce.store.service.ShoppingStoreService;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/v1/shopping-store")
 @RequiredArgsConstructor
@@ -29,8 +31,8 @@ public class ShoppingStoreController implements ShoppingStoreOperation {
     }
 
     @Override
-    public ProductDto getProduct(String productId) {
-        return service.getProduct(service.getUUID(productId));
+    public ProductDto getProduct(UUID productId) {
+        return service.getProduct(productId);
     }
 
     @Override
@@ -44,14 +46,13 @@ public class ShoppingStoreController implements ShoppingStoreOperation {
     }
 
     @Override
-    public boolean deleteProduct(String productId) throws NotFoundResource {
-        String uuid = productId.replaceAll("\"", "").trim();
-        return service.deleteProduct(service.getUUID(uuid));
+    public boolean deleteProduct(UUID productId) throws NotFoundResource {
+        return service.deleteProduct(productId);
     }
 
     @Override
-    public boolean changeState(String productId, QuantityState quantityState) throws NotFoundResource {
-        return service.changeState(service.getUUID(productId), quantityState);
+    public boolean changeState(UUID productId, QuantityState quantityState) throws NotFoundResource {
+        return service.changeState(productId, quantityState);
     }
 
 

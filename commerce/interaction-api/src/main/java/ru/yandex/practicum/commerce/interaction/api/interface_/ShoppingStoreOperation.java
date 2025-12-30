@@ -14,6 +14,8 @@ import ru.yandex.practicum.commerce.interaction.api.enum_.ProductCategory;
 import ru.yandex.practicum.commerce.interaction.api.enum_.QuantityState;
 import ru.yandex.practicum.commerce.interaction.api.exception.NotFoundResource;
 
+import java.util.UUID;
+
 @Validated
 public interface ShoppingStoreOperation {
     @GetMapping
@@ -23,7 +25,7 @@ public interface ShoppingStoreOperation {
                                  @RequestParam(required = false, defaultValue = "productId, ASC") String sort);
 
     @GetMapping("/{productId}")
-    ProductDto getProduct(@PathVariable @NotBlank String productId) throws NotFoundResource;
+    ProductDto getProduct(@PathVariable @NotNull UUID productId) throws NotFoundResource;
 
     @PutMapping
     ProductDto createProduct(@RequestBody @Validated(ProductStrategy.Create.class) @Valid ProductDto product);
@@ -33,9 +35,9 @@ public interface ShoppingStoreOperation {
             throws NotFoundResource;
 
     @PostMapping("/removeProductFromStore")
-    boolean deleteProduct(@RequestBody @NotBlank String productId) throws NotFoundResource;
+    boolean deleteProduct(@RequestBody @NotNull UUID productId) throws NotFoundResource;
 
     @PostMapping("/quantityState")
-    boolean changeState(@RequestParam @NotBlank String productId,
+    boolean changeState(@RequestParam @NotNull UUID productId,
                         @RequestParam @NotNull QuantityState quantityState) throws NotFoundResource;
 }

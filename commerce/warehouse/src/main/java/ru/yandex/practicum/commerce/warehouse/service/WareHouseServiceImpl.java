@@ -9,7 +9,6 @@ import ru.yandex.practicum.commerce.interaction.api.exception.NoSpecifiedProduct
 import ru.yandex.practicum.commerce.interaction.api.exception.NotFoundResource;
 import ru.yandex.practicum.commerce.interaction.api.exception.ProductInShoppingCartLowQuantityInWarehouse;
 import ru.yandex.practicum.commerce.interaction.api.exception.SpecifiedProductAlreadyInWarehouseException;
-import ru.yandex.practicum.commerce.interaction.api.utill.Convert;
 import ru.yandex.practicum.commerce.warehouse.mapper.AddressMapper;
 import ru.yandex.practicum.commerce.warehouse.mapper.ProductMapper;
 import ru.yandex.practicum.commerce.warehouse.model.Address;
@@ -57,7 +56,7 @@ public class WareHouseServiceImpl implements WareHouseService {
                     .formatted(newProduct.getProductId()));
 
         // если продукта еще не было, создадим
-        Product product = productRepository.findById(Convert.converStringToUUID(newProduct.getProductId()))
+        Product product = productRepository.findById(newProduct.getProductId())
                 .orElse(productRepository.save(ProductMapper.mapFromDto(newProduct)));
 
         wareHouse.getProducts().put(product.getId(), 0);
@@ -79,19 +78,17 @@ public class WareHouseServiceImpl implements WareHouseService {
                 .deliveryWeight(0.0)
                 .build();
 
-        for (Map.Entry<String, Integer> entry: cart.getProducts().entrySet()) {
-            UUID uuid = Convert.converStringToUUID(entry.getKey());
-
-            if (!wareHouse.getProducts().containsKey(uuid))
+        for (Map.Entry<UUID, Integer> entry: cart.getProducts().entrySet()) {
+            if (!wareHouse.getProducts().containsKey(entry.getKey()))
                 throw new ProductInShoppingCartLowQuantityInWarehouse("Товар %s не найден на складе"
                         .formatted(entry.getKey()));
 
-            if (wareHouse.getProducts().get(uuid) < entry.getValue())
+            if (wareHouse.getProducts().get(entry.getKey()) < entry.getValue())
                 throw new ProductInShoppingCartLowQuantityInWarehouse("Товара %s не достаточно на складе"
                         .formatted(entry.getKey()));
 
-            Product product = productRepository.findById(uuid)
-                    .orElseThrow( () -> new NotFoundResource("Не найден товар - %s".formatted(uuid)));
+            Product product = productRepository.findById(entry.getKey())
+                    .orElseThrow( () -> new NotFoundResource("Не найден товар - %s".formatted(entry.getKey())));
 
             bookedProducts.setDeliveryWeight( bookedProducts.getDeliveryWeight() + product.getWeight());
             bookedProducts.setDeliveryVolume( bookedProducts.getDeliveryVolume()
@@ -114,13 +111,11 @@ public class WareHouseServiceImpl implements WareHouseService {
         WareHouse wareHouse = wareHouseRepository.findById(wareHouseId).orElseThrow(
                 () -> new NotFoundResource("Не найден склад с id - %s".formatted(wareHouseId)));
 
-        UUID uuid = Convert.converStringToUUID(productQuantity.getProductId());
-
-        if (!wareHouse.getProducts().containsKey(uuid))
+        if (!wareHouse.getProducts().containsKey(productQuantity.getProductId()))
             throw new NoSpecifiedProductInWarehouseException("Товар %s не найден на складе"
-                    .formatted(uuid));
+                    .formatted(productQuantity.getProductId()));
 
-        wareHouse.getProducts().put(uuid, productQuantity.getQuantity());
+        wareHouse.getProducts().put(productQuantity.getProductId(), productQuantity.getQuantity());
 
         wareHouseRepository.save(wareHouse);
     }
