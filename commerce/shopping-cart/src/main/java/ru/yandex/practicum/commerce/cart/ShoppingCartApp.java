@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
-@EnableFeignClients(basePackages = "ru.yandex.practicum.commerce.interaction.api")
+@EnableFeignClients(basePackages = "ru.yandex.practicum.commerce.interaction.api.client")
 public class ShoppingCartApp {
     public static void main(String[] args) {
         SpringApplication.run(ShoppingCartApp.class, args);
