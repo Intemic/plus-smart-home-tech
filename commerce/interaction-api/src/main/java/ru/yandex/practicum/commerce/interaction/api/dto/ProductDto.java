@@ -17,7 +17,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class ProductDto {
-    @NotBlank(groups = ProductStrategy.Update.class)
+    @NotBlank
     private String productId;
 
     @NotBlank(groups = ProductStrategy.Create.class)

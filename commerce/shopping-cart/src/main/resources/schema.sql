@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS carts (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    id UUID PRIMARY KEY,
     user_name VARCHAR(50) UNIQUE,
     state VARCHAR(10)
 );
@@ -11,3 +11,6 @@ CREATE TABLE IF NOT EXISTS cart_products (
     FOREIGN KEY(cart_id) REFERENCES carts(id) ON DELETE CASCADE,
     CONSTRAINT unique_keys_products UNIQUE(cart_id, product_id)
 );
+
+DELETE FROM carts;
+DELETE FROM cart_products;

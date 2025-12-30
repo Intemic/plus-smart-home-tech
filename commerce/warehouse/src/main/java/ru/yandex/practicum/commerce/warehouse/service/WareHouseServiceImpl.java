@@ -74,7 +74,10 @@ public class WareHouseServiceImpl implements WareHouseService {
         WareHouse wareHouse = wareHouseRepository.findById(wareHouseId).orElseThrow(
                 () -> new NotFoundResource("Не найден склад с id - %s".formatted(wareHouseId)));
 
-        BookedProductsDto bookedProducts = BookedProductsDto.builder().build();
+        BookedProductsDto bookedProducts = BookedProductsDto.builder()
+                .deliveryVolume(0.0)
+                .deliveryWeight(0.0)
+                .build();
 
         for (Map.Entry<String, Integer> entry: cart.getProducts().entrySet()) {
             UUID uuid = Convert.converStringToUUID(entry.getKey());

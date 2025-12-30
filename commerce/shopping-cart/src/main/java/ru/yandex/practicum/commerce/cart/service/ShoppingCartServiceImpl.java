@@ -74,7 +74,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         // проверим на наличие
         wareHouseClient.checkAvailability(CartMapper.mapToDto(cart));
 
-        cart = repository.save(cart);
+        cart = updateCart(cart);
         log.info("Данные о продуктах обновлены");
         return CartMapper.mapToDto(cart);
     }
@@ -149,14 +149,14 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         // проверим на наличие
         wareHouseClient.checkAvailability(CartMapper.mapToDto(cart));
 
-        cart = repository.save(cart);
+        cart = updateCart(cart);
         log.info("Количество изменено");
 
         return CartMapper.mapToDto(cart);
     }
 
+    @Transactional
     private Cart updateCart(Cart cart) {
-        return null;
+       return repository.save(cart);
     }
-
 }
