@@ -67,7 +67,7 @@ public class WareHouseServiceImpl implements WareHouseService {
     @Override
     public BookedProductsDto checkAvailability(UUID wareHouseId, ShoppingCartDto cart)
             throws ProductInShoppingCartLowQuantityInWarehouse,
-                   NotFoundResource {
+            NotFoundResource {
         log.info("Проверка доступности");
 
         WareHouse wareHouse = wareHouseRepository.findById(wareHouseId).orElseThrow(
@@ -78,7 +78,7 @@ public class WareHouseServiceImpl implements WareHouseService {
                 .deliveryWeight(0.0)
                 .build();
 
-        for (Map.Entry<UUID, Integer> entry: cart.getProducts().entrySet()) {
+        for (Map.Entry<UUID, Integer> entry : cart.getProducts().entrySet()) {
             if (!wareHouse.getProducts().containsKey(entry.getKey()))
                 throw new ProductInShoppingCartLowQuantityInWarehouse("Товар %s не найден на складе"
                         .formatted(entry.getKey()));
@@ -88,10 +88,10 @@ public class WareHouseServiceImpl implements WareHouseService {
                         .formatted(entry.getKey()));
 
             Product product = productRepository.findById(entry.getKey())
-                    .orElseThrow( () -> new NotFoundResource("Не найден товар - %s".formatted(entry.getKey())));
+                    .orElseThrow(() -> new NotFoundResource("Не найден товар - %s".formatted(entry.getKey())));
 
-            bookedProducts.setDeliveryWeight( bookedProducts.getDeliveryWeight() + product.getWeight());
-            bookedProducts.setDeliveryVolume( bookedProducts.getDeliveryVolume()
+            bookedProducts.setDeliveryWeight(bookedProducts.getDeliveryWeight() + product.getWeight());
+            bookedProducts.setDeliveryVolume(bookedProducts.getDeliveryVolume()
                     + product.getDimension().getHeight()
                     * product.getDimension().getWidth() * product.getDimension().getDepth());
             if (product.isFragile())
@@ -105,7 +105,7 @@ public class WareHouseServiceImpl implements WareHouseService {
     @Transactional
     public void addProductQuantity(UUID wareHouseId, AddProductToWarehouseRequest productQuantity)
             throws NoSpecifiedProductInWarehouseException,
-                   NotFoundResource {
+            NotFoundResource {
         log.info("Обновление кол-ва у товара");
 
         WareHouse wareHouse = wareHouseRepository.findById(wareHouseId).orElseThrow(

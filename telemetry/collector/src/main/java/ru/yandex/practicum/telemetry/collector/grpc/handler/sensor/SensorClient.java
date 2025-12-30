@@ -10,7 +10,6 @@ import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
 import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 import ru.yandex.practicum.telemetry.collector.config.CollectorConfig;
 import ru.yandex.practicum.telemetry.collector.config.KafkaClient;
-import ru.yandex.practicum.telemetry.collector.dto.sensor.SensorEvent;
 
 import java.time.Instant;
 

@@ -28,23 +28,22 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ApiError handleNotAuthorizedUserException(NotAuthorizedUserException ex) {
-        log.error("Ошибка авторизации: {}", ex.getMessage());
+        log.error(convertStackTraceToString(ex));
         return ApiError.builder()
                 .message(ex.getMessage())
-                .reason("Ошибка авторизации")
-                .status(HttpStatus.NOT_FOUND.toString())
+                .status(HttpStatus.UNAUTHORIZED.toString())
                 .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
                 .build();
     }
 
-    @ExceptionHandler
+    @ExceptionHandler({InvalidOperation.class,
+            NoProductsInShoppingCartException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleInvalidOperation(InvalidOperation ex) {
-        log.error("Недопустимая операция: {}", ex.getMessage());
+    public ApiError handleInvalidOperation(RuntimeException ex) {
+        log.error(convertStackTraceToString(ex));
         return ApiError.builder()
                 .message(ex.getMessage())
-                .reason("Недопустимая операция")
-                .status(HttpStatus.NOT_FOUND.toString())
+                .status(HttpStatus.BAD_REQUEST.toString())
                 .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
                 .build();
     }
@@ -52,23 +51,10 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handleNoQuantityAvailable(NoQuantityAvailable ex) {
-        log.error("Недостаточное кол-во: {}", ex.getMessage());
+        log.error(convertStackTraceToString(ex));
         return ApiError.builder()
                 .message(ex.getMessage())
-                .reason("Недостаточное кол-во")
-                .status(HttpStatus.NOT_FOUND.toString())
-                .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
-                .build();
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleNoProductsInShoppingCartException(NoProductsInShoppingCartException ex) {
-        log.error("Товар отсутствует: {}", ex.getMessage());
-        return ApiError.builder()
-                .message(ex.getMessage())
-                .reason("Товар отсутствует")
-                .status(HttpStatus.NOT_FOUND.toString())
+                .status(HttpStatus.CONFLICT.toString())
                 .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
                 .build();
     }
@@ -76,10 +62,9 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiError handleNotFoundResource(NotFoundResource ex) {
-        log.error("Resource not found: {}", ex.getMessage());
+        log.error(convertStackTraceToString(ex));
         return ApiError.builder()
                 .message(ex.getMessage())
-                .reason("Запрашиваемый объект не найден")
                 .status(HttpStatus.NOT_FOUND.toString())
                 .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
                 .build();
@@ -89,10 +74,9 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiError handleException(Exception ex) {
-        log.error("Internal server error: {}", ex.getMessage(), ex);
+        log.error(convertStackTraceToString(ex));
         return ApiError.builder()
                 .message("Внутренняя ошибка сервера")
-                .reason(ex.getMessage())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
                 .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
                 .build();

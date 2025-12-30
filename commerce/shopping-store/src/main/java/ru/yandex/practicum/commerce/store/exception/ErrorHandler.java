@@ -28,10 +28,9 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiError handleNotFoundResource(NotFoundResource ex) {
-        log.error("Resource not found: {}", ex.getMessage());
+        log.error(convertStackTraceToString(ex));
         return ApiError.builder()
                 .message(ex.getMessage())
-                .reason("Запрашиваемый объект не найден")
                 .status(HttpStatus.NOT_FOUND.toString())
                 .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
                 .build();
@@ -40,10 +39,9 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiError handleException(Exception ex) {
-        log.error("Internal server error: {}", ex.getMessage(), ex);
+        log.error(convertStackTraceToString(ex));
         return ApiError.builder()
                 .message("Внутренняя ошибка сервера")
-                .reason(ex.getMessage())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
                 .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
                 .build();

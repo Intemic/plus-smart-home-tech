@@ -40,7 +40,7 @@ public class WareHouseController implements WareHouseOperation {
     @Override
     public void addProductQuantity(AddProductToWarehouseRequest productQuantity)
             throws NoSpecifiedProductInWarehouseException {
-       service.addProductQuantity(wareHouse, productQuantity);
+        service.addProductQuantity(wareHouse, productQuantity);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class WareHouseController implements WareHouseOperation {
 
     private AddressDto getAddressWareHouse() {
         String[] addresses =
-                new String[] {"ADDRESS_1", "ADDRESS_2"};
+                new String[]{"ADDRESS_1", "ADDRESS_2"};
         String currentAddress = addresses[Random.from(new SecureRandom()).nextInt(0, addresses.length)];
         return AddressDto.builder()
                 .country(currentAddress)

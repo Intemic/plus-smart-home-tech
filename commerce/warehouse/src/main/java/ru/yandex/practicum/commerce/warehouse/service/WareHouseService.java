@@ -18,7 +18,7 @@ public interface WareHouseService {
 
     BookedProductsDto checkAvailability(UUID wareHouseId, ShoppingCartDto cart)
             throws ProductInShoppingCartLowQuantityInWarehouse,
-                   NotFoundResource;
+            NotFoundResource;
 
     void addProductQuantity(UUID wareHouseId, AddProductToWarehouseRequest productQuantity)
             throws NoSpecifiedProductInWarehouseException,

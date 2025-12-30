@@ -152,6 +152,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Transactional
     private Cart updateCart(Cart cart) {
-       return repository.save(cart);
+        return repository.save(cart);
     }
 }
