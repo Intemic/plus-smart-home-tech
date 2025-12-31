@@ -18,8 +18,13 @@ public interface ShoppingCartOperation {
             throws NotAuthorizedUserException;
 
     @PutMapping
+//    ShoppingCartDto addProducts(@RequestParam String username,
+//                                @RequestBody @NotNull Map<@NotNull UUID, @NotNull @Positive Integer> products)
+//            throws NotAuthorizedUserException,
+//            NoQuantityAvailable,
+//            InvalidOperation;
     ShoppingCartDto addProducts(@RequestParam String username,
-                                @RequestBody @NotNull Map<@NotNull UUID, @NotNull @Positive Integer> products)
+                                @RequestBody Map<UUID, Integer> products)
             throws NotAuthorizedUserException,
             NoQuantityAvailable,
             InvalidOperation;

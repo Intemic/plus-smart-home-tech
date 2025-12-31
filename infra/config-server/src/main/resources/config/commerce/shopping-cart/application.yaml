@@ -39,7 +39,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: circuitbreakers
+        include: circuitbreakers, info
 
 server:
   port: 0
