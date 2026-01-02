@@ -23,12 +23,11 @@ public class Cart {
     private String userName;
 
     @Enumerated(value = EnumType.STRING)
-    CartState state;
+    private CartState state;
 
     @ElementCollection
     @CollectionTable(name = "cart_products", joinColumns = @JoinColumn(name = "cart_id"))
     @MapKeyColumn(name = "product_id")
     @Column(name = "quantity")
     private final Map<UUID, Integer> products = new HashMap<>();
-    //private Map<UUID, Integer> products;
 }

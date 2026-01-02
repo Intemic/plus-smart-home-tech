@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 import ru.yandex.practicum.commerce.cart.mapper.CartMapper;
 import ru.yandex.practicum.commerce.cart.model.Cart;
 import ru.yandex.practicum.commerce.cart.storage.ShoppingCartRepository;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final ShoppingCartRepository repository;
     private final WareHouseClient wareHouseClient;
+    private final TransactionTemplate transactionTemplate;
 
     private Cart getCartInner(String username) throws NotAuthorizedUserException {
         log.info("Получаем корзину для пользователя");
@@ -72,9 +74,11 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         // проверим на наличие
         wareHouseClient.checkAvailability(CartMapper.mapToDto(cart));
 
-        cart = updateCart(cart);
+        Cart cartSaved =  transactionTemplate.execute( status ->  repository.save(cart));
         log.info("Данные о продуктах обновлены");
-        return CartMapper.mapToDto(cart);
+
+        assert cartSaved != null;
+        return CartMapper.mapToDto(cartSaved);
     }
 
     @Override
@@ -144,14 +148,11 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         // проверим на наличие
         wareHouseClient.checkAvailability(CartMapper.mapToDto(cart));
 
-        cart = updateCart(cart);
+        Cart cartSaved =  transactionTemplate.execute( status ->  repository.save(cart));
         log.info("Количество изменено");
 
-        return CartMapper.mapToDto(cart);
+        assert cartSaved != null;
+        return CartMapper.mapToDto(cartSaved);
     }
 
-    @Transactional
-    private Cart updateCart(Cart cart) {
-        return repository.save(cart);
-    }
 }

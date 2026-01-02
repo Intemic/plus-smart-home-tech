@@ -19,6 +19,8 @@ import ru.yandex.practicum.commerce.warehouse.storage.WareHouseRepository;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -78,7 +80,14 @@ public class WareHouseServiceImpl implements WareHouseService {
                 .deliveryWeight(0.0)
                 .build();
 
+        Map<UUID, Product> mapProducts = productRepository.findAllById(cart.getProducts().keySet())
+                .stream()
+                .collect(Collectors.toMap( Product::getId, Function.identity()));
+
         for (Map.Entry<UUID, Integer> entry : cart.getProducts().entrySet()) {
+            if (!mapProducts.containsKey(entry.getKey()))
+                throw new NotFoundResource("Не найден товар - %s".formatted(entry.getKey()));
+
             if (!wareHouse.getProducts().containsKey(entry.getKey()))
                 throw new ProductInShoppingCartLowQuantityInWarehouse("Товар %s не найден на складе"
                         .formatted(entry.getKey()));
@@ -87,8 +96,7 @@ public class WareHouseServiceImpl implements WareHouseService {
                 throw new ProductInShoppingCartLowQuantityInWarehouse("Товара %s не достаточно на складе"
                         .formatted(entry.getKey()));
 
-            Product product = productRepository.findById(entry.getKey())
-                    .orElseThrow(() -> new NotFoundResource("Не найден товар - %s".formatted(entry.getKey())));
+            Product product = mapProducts.get(entry.getKey());
 
             bookedProducts.setDeliveryWeight(bookedProducts.getDeliveryWeight() + product.getWeight());
             bookedProducts.setDeliveryVolume(bookedProducts.getDeliveryVolume()

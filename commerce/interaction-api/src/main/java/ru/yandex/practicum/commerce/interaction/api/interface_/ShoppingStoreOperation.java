@@ -19,9 +19,9 @@ import java.util.UUID;
 public interface ShoppingStoreOperation {
     @GetMapping
     Page<ProductDto> getProducts(@RequestParam ProductCategory category,
-                                 @RequestParam(required = false, defaultValue = "1") @PositiveOrZero int page,
-                                 @RequestParam(required = false, defaultValue = "10") @Positive int size,
-                                 @RequestParam(required = false, defaultValue = "productId, ASC") String sort);
+                                 @RequestParam(defaultValue = "1") @PositiveOrZero int page,
+                                 @RequestParam(defaultValue = "10") @Positive int size,
+                                 @RequestParam(defaultValue = "productId, ASC") String sort);
 
     @GetMapping("/{productId}")
     ProductDto getProduct(@PathVariable @NotNull UUID productId) throws NotFoundResource;
