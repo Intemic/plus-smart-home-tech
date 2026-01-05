@@ -10,7 +10,6 @@ import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
 import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
 import ru.yandex.practicum.telemetry.collector.config.CollectorConfig;
 import ru.yandex.practicum.telemetry.collector.config.KafkaClient;
-import ru.yandex.practicum.telemetry.collector.dto.hub.HubEvent;
 
 import java.time.Instant;
 
