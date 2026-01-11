@@ -70,7 +70,7 @@ public class WareHouseServiceImpl implements WareHouseService {
     public BookedProductsDto checkAvailability(UUID wareHouseId, ShoppingCartDto cart)
             throws ProductInShoppingCartLowQuantityInWarehouse,
             NotFoundResource {
-        log.info("Проверка доступности");
+        log.debug("Проверка доступности для корзины {}", cart.getShoppingCartId());
 
         WareHouse wareHouse = wareHouseRepository.findById(wareHouseId).orElseThrow(
                 () -> new NotFoundResource("Не найден склад с id - %s".formatted(wareHouseId)));
