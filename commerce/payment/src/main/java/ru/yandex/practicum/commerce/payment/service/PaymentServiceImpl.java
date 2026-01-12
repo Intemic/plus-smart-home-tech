@@ -1,6 +1,9 @@
 package ru.yandex.practicum.commerce.payment.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,11 +20,11 @@ import ru.yandex.practicum.commerce.payment.model.Payment;
 import ru.yandex.practicum.commerce.payment.storage.PaymentRepository;
 import static ru.yandex.practicum.commerce.interaction.api.enum_.PaymentState.*;
 
-
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
@@ -30,12 +33,14 @@ public class PaymentServiceImpl implements PaymentService {
     private final ShoppingStoreClient storeClient;
     private final OrderClient orderClient;
     private final TransactionTemplate transactionTemplate;
+    private final ObjectMapper objectMapper;
     @Value("${payment.main.taxRate:10}")
-    private final int taxRate;
+    private int taxRate;
 
     @Override
     @Transactional
     public PaymentDto make(OrderDto order) throws NotEnoughInfoInOrderToCalculateException {
+        log.info("Формирование оплаты для заказа: %s".formatted(convertToString(order)));
         double productCost = getProductCost(order);
         Payment payment = Payment.builder()
                 .orderId(order.getOrderId())
@@ -50,12 +55,14 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Double calculateTotalCost(OrderDto order) throws NotEnoughInfoInOrderToCalculateException {
+        log.info("Расчёт полной стоимости заказа: %s".formatted(convertToString(order)));
         double productCost = getProductCost(order);
         return productCost + getFeeTotal(productCost) + DELIVERY_PRICE;
     }
 
     @Override
     public void refund(UUID paymentId) throws NoOrderFoundException {
+        log.info("Оплата %s прошла успешно".formatted(paymentId));
         Payment payment = changeState(paymentId, SUCCESS);
         orderClient.setPaymentOrder(payment.getOrderId());
     }
@@ -63,11 +70,13 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional(readOnly = true)
     public Double calculateProductCost(OrderDto order) throws NotEnoughInfoInOrderToCalculateException {
+        log.info("Расчёт стоимости товаров в заказе: %s".formatted(convertToString(order)));
         return getProductCost(order);
     }
 
     @Override
     public void failed(UUID paymentId) throws NoOrderFoundException {
+        log.info("Отказ оплаты %s".formatted(paymentId));
         Payment payment = changeState(paymentId, FAILED);
         orderClient.setPaymentFailedOrder(payment.getOrderId());
     }
@@ -95,5 +104,14 @@ public class PaymentServiceImpl implements PaymentService {
 
     private double getFeeTotal(double productCost) {
         return productCost * taxRate / 100;
+    }
+
+    private String convertToString(Object object) {
+        String json;
+        try {
+            return objectMapper.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            return object.toString();
+        }
     }
 }

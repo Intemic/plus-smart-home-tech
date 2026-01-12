@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.commerce.interaction.api.exception.ApiError;
+import ru.yandex.practicum.commerce.interaction.api.exception.NoOrderFoundException;
+import ru.yandex.practicum.commerce.interaction.api.exception.NotEnoughInfoInOrderToCalculateException;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -26,6 +28,31 @@ public class ErrorHandler {
         ex.printStackTrace(new PrintWriter(stringWriter));
         return stringWriter.toString();
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler
+    public ApiError handleNotEnoughInfoInOrderToCalculateException(NotEnoughInfoInOrderToCalculateException ex) {
+        log.error(convertStackTraceToString(ex));
+        return ApiError.builder()
+                .message(ex.getMessage())
+                .status(HttpStatus.BAD_REQUEST.toString())
+                .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
+                .exceptionClass(ex.getClass().getName().toString())
+                .build();
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler
+    public ApiError handleNoOrderFoundException(NoOrderFoundException ex) {
+        log.error(convertStackTraceToString(ex));
+        return ApiError.builder()
+                .message(ex.getMessage())
+                .status(HttpStatus.NOT_FOUND.toString())
+                .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
+                .exceptionClass(ex.getClass().getName().toString())
+                .build();
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler
     public ApiError handleArgumentNotValidException(MethodArgumentNotValidException ex) {
@@ -34,6 +61,7 @@ public class ErrorHandler {
                 .message(ex.getMessage())
                 .status(HttpStatus.BAD_REQUEST.toString())
                 .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
+                .exceptionClass(ex.getClass().getName().toString())
                 .build();
     }
 
@@ -45,6 +73,9 @@ public class ErrorHandler {
                 .message(ex.getMessage())
                 .status(HttpStatus.BAD_REQUEST.toString())
                 .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
+                /* если это ошибка возникла то, это не заполнены нужные данные
+                передадим это исключение */
+                .exceptionClass(NotEnoughInfoInOrderToCalculateException.class.getName())
                 .build();
     }
 
@@ -53,7 +84,7 @@ public class ErrorHandler {
     public ApiError handleException(Exception ex) {
         log.error(convertStackTraceToString(ex));
         return ApiError.builder()
-                .message("Внутренняя ошибка сервера")
+                .message(ex.getMessage())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
                 .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
                 .build();

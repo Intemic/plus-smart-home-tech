@@ -33,6 +33,7 @@ public class ErrorHandler {
                 .message(ex.getMessage())
                 .status(HttpStatus.NOT_FOUND.toString())
                 .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
+                .exceptionClass(NotFoundResource.class.getSimpleName())
                 .build();
     }
 
