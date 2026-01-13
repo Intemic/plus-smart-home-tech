@@ -24,62 +24,74 @@ public class OrderController implements OrderOperation {
     private final OrderService service;
 
     @Override
-    public Page<OrderDto> getOrders(String username) throws NotAuthorizedUserException {
-        return null;
+    public Page<OrderDto> getOrders(String username)
+            throws NotAuthorizedUserException {
+        return service.getOrders(username);
     }
 
     @Override
-    public OrderDto createOrder(CreateNewOrderRequest newOrder) throws NoSpecifiedProductInWarehouseException {
-        return null;
+    public OrderDto createOrder(CreateNewOrderRequest newOrder)
+            throws NoSpecifiedProductInWarehouseException {
+        return service.createOrder(newOrder);
     }
 
     @Override
-    public OrderDto setReturnOrder(ProductReturnRequest productReturn) throws NoOrderFoundException {
-        return null;
+    public OrderDto setReturnOrder(ProductReturnRequest productReturn)
+            throws NoOrderFoundException {
+        return service.setReturnOrder(productReturn);
     }
 
     @Override
-    public OrderDto setPaymentOrder(UUID orderId) throws NoOrderFoundException {
-        return null;
+    public OrderDto setPaymentOrder(UUID orderId)
+            throws NoOrderFoundException {
+        return service.setPaymentOrder(orderId);
     }
 
     @Override
-    public OrderDto setPaymentFailedOrder(UUID orderId) throws NoOrderFoundException {
-        return null;
+    public OrderDto setPaymentFailedOrder(UUID orderId)
+            throws NoOrderFoundException {
+        return service.setPaymentFailedOrder(orderId);
     }
 
     @Override
-    public OrderDto setDeliveryOrder(UUID orderId) throws NoOrderFoundException {
-        return null;
+    public OrderDto setDeliveryOrder(UUID orderId)
+            throws NoOrderFoundException {
+        return service.setDeliveryOrder(orderId);
     }
 
     @Override
-    public OrderDto setDeliveryFailedOrder(UUID orderId) throws NoOrderFoundException {
-        return null;
+    public OrderDto setDeliveryFailedOrder(UUID orderId)
+            throws NoOrderFoundException {
+        return service.setDeliveryFailedOrder(orderId);
     }
 
     @Override
-    public OrderDto setCompletedOrder(UUID orderId) throws NoOrderFoundException {
-        return null;
+    public OrderDto setCompletedOrder(UUID orderId)
+            throws NoOrderFoundException {
+        return service.setCompletedOrder(orderId);
     }
 
     @Override
-    public OrderDto calculateTotalOrder(UUID orderId) throws NoOrderFoundException {
-        return null;
+    public OrderDto calculateTotalOrder(UUID orderId)
+            throws NoOrderFoundException {
+        return service.calculateTotalOrder(orderId);
     }
 
     @Override
-    public OrderDto calculateDeliveryOrder(UUID orderId) throws NoOrderFoundException {
-        return null;
+    public OrderDto calculateDeliveryOrder(UUID orderId)
+            throws NoOrderFoundException {
+        return service.calculateDeliveryOrder(orderId);
     }
 
     @Override
-    public OrderDto assemblyOrder(UUID orderId) throws NoOrderFoundException {
-        return null;
+    public OrderDto assemblyOrder(UUID orderId)
+            throws NoOrderFoundException {
+        return service.assemblyOrder(orderId);
     }
 
     @Override
-    public OrderDto assemblyFailedOrder(UUID orderId) throws NoOrderFoundException {
-        return null;
+    public OrderDto assemblyFailedOrder(UUID orderId)
+            throws NoOrderFoundException {
+        return service.assemblyFailedOrder(orderId);
     }
 }

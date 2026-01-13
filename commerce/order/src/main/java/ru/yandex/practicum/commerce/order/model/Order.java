@@ -1,7 +1,7 @@
 package ru.yandex.practicum.commerce.order.model;
 
 import jakarta.persistence.*;
-import lombok.Builder;
+import lombok.*;
 import ru.yandex.practicum.commerce.interaction.api.enum_.OrderState;
 
 import java.util.HashMap;
@@ -10,6 +10,10 @@ import java.util.UUID;
 
 @Builder
 @Entity(name = "orders")
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,7 +26,7 @@ public class Order {
     @CollectionTable(name = "orders_products", joinColumns = @JoinColumn(name = "order_id"))
     @MapKeyColumn(name = "product_id")
     @Column(name = "quantity")
-    private final Map<UUID, Integer> products = new HashMap<>();
+    private Map<UUID, Integer> products = new HashMap<>();
 
     @Column(name = "payment_id")
     private UUID paymentId;
@@ -33,11 +37,11 @@ public class Order {
     @Enumerated(value = EnumType.STRING)
     private OrderState state;
 
-//    @Column(name = "delivery_weight")
-//    private Double deliveryWeight;
-//
-//    @Column(name = "delivery_volume")
-//    private Double deliveryVolume;
+    @Column(name = "delivery_weight")
+    private Double deliveryWeight;
+
+    @Column(name = "delivery_volume")
+    private Double deliveryVolume;
 
     private boolean fragile;
 

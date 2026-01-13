@@ -18,6 +18,15 @@ public class DeliveryMapper {
                .build();
    }
 
+   public static Delivery mapFromDto(DeliveryDto deliveryDto) {
+       return Delivery.builder()
+               .deliveryId(deliveryDto.getDeliveryId())
+               .orderId(deliveryDto.getOrderId())
+               .fromAddress(mapFromAddressDto(deliveryDto.getFromAddress()))
+               .toAddress(mapFromAddressDto(deliveryDto.getToAddress()))
+               .build();
+   }
+
    public static AddressDto mapToAddressDto(Address address) {
        return AddressDto.builder()
                .country(address.getCountry())
@@ -26,5 +35,15 @@ public class DeliveryMapper {
                .house(address.getHouse())
                .flat(address.getFlat())
                .build();
+   }
+
+   public static Address mapFromAddressDto(AddressDto addressDto) {
+        return Address.builder()
+                .country(addressDto.getCountry())
+                .city(addressDto.getCity())
+                .street(addressDto.getStreet())
+                .house(addressDto.getHouse())
+                .flat(addressDto.getFlat())
+                .build();
    }
 }

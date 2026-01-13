@@ -3,13 +3,16 @@ package ru.yandex.practicum.commerce.delivery.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
+import ru.yandex.practicum.commerce.delivery.mapper.DeliveryMapper;
 import ru.yandex.practicum.commerce.delivery.model.Delivery;
 import ru.yandex.practicum.commerce.delivery.storage.DeliveryRepository;
 import ru.yandex.practicum.commerce.interaction.api.client.OrderClient;
 import ru.yandex.practicum.commerce.interaction.api.client.WareHouseClient;
 import ru.yandex.practicum.commerce.interaction.api.dto.delivery.DeliveryDto;
 import ru.yandex.practicum.commerce.interaction.api.dto.order.OrderDto;
+import ru.yandex.practicum.commerce.interaction.api.dto.warehouse.AddressDto;
 import ru.yandex.practicum.commerce.interaction.api.dto.warehouse.ShippedToDeliveryRequest;
 import ru.yandex.practicum.commerce.interaction.api.enum_.DeliveryState;
 import ru.yandex.practicum.commerce.interaction.api.exception.NoDeliveryFoundException;
@@ -29,8 +32,11 @@ public class DeliveryServiceImpl implements DeliveryService {
     private double baseCost;
 
     @Override
-    public DeliveryDto create(DeliveryDto delivery) {
-        return null;
+    @Transactional
+    public DeliveryDto create(DeliveryDto deliveryDto) {
+        Delivery delivery = DeliveryMapper.mapFromDto(deliveryDto);
+        delivery.setDeliveryState(CREATED);
+        return DeliveryMapper.mapToDto(repository.save(delivery));
     }
 
     @Override
@@ -56,32 +62,37 @@ public class DeliveryServiceImpl implements DeliveryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Double cost(OrderDto order) throws NoDeliveryFoundException {
         // базовая стоимость равна 5.0
-        Double resultCost = baseCost;
+        Double resultCost = 0.0;
 
-//        Delivery delivery = repository.findByOrderId(order.getOrderId()).orElseThrow(
-//                () -> new NoDeliveryFoundException("Не найдена доставка для заказа %s".formatted(order.getOrderId())));
-//
-//        switch (delivery.)
+        Delivery delivery = repository.findByOrderId(order.getOrderId()).orElseThrow(
+                () -> new NoDeliveryFoundException("Не найдена доставка для заказа %s".formatted(order.getOrderId())));
 
         // умножаем базовую стоимость на число, зависящее от адреса склада
-        // TODO : как то определить адрес склада и накинуть коэффициент
+        AddressDto address = wareHouseClient.getAddress();
+        resultCost = switch (address.getStreet()) {
+            case "ADDRESS_1" -> baseCost + baseCost * 1;
+            case "ADDRESS_2" -> baseCost + baseCost * 2;
+            default -> 0.0;
+        };
 
         // Если в заказе есть признак хрупкости, умножаем сумму на 0.2
         if (order.getFragile())
-            baseCost += baseCost * 0.2;
+            resultCost += resultCost * 0.2;
 
         // Добавляем к сумме, полученной на предыдущих шагах, вес заказа, умноженный на 0.3
-        baseCost += order.getDeliveryWeight() * 0.3;
+        resultCost += order.getDeliveryWeight() * 0.3;
 
         // Складываем с полученным на прошлом шаге итогом объём, умноженный на 0.2.
-        baseCost += order.getDeliveryVolume() * 0.2;
+        resultCost += order.getDeliveryVolume() * 0.2;
 
         // Для учёта адреса доставки будем использовать упрощённую схему
-        //baseCost += ;
+       if (!delivery.getToAddress().getStreet().equals(address.getStreet()))
+            resultCost += resultCost * 0.2;
 
-        return baseCost;
+        return resultCost;
     }
 
     private Delivery changeState(UUID orderId, DeliveryState state) {
