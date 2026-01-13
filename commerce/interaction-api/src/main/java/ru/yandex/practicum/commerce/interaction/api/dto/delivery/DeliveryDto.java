@@ -1,12 +1,11 @@
 package ru.yandex.practicum.commerce.interaction.api.dto.delivery;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sun.jdi.PrimitiveValue;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import ru.yandex.practicum.commerce.interaction.api.dto.AddressDto;
+import ru.yandex.practicum.commerce.interaction.api.dto.warehouse.AddressDto;
 import ru.yandex.practicum.commerce.interaction.api.enum_.DeliveryState;
 
 import java.util.UUID;

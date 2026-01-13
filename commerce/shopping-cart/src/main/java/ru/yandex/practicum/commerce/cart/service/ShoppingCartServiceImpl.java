@@ -10,7 +10,7 @@ import ru.yandex.practicum.commerce.cart.model.Cart;
 import ru.yandex.practicum.commerce.cart.storage.ShoppingCartRepository;
 import ru.yandex.practicum.commerce.interaction.api.client.WareHouseClient;
 import ru.yandex.practicum.commerce.interaction.api.dto.ChangeProductQuantityRequest;
-import ru.yandex.practicum.commerce.interaction.api.dto.ShoppingCartDto;
+import ru.yandex.practicum.commerce.interaction.api.dto.warehouse.ShoppingCartDto;
 import ru.yandex.practicum.commerce.interaction.api.enum_.CartState;
 import ru.yandex.practicum.commerce.interaction.api.exception.*;
 

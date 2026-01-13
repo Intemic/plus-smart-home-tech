@@ -1,4 +1,4 @@
-package ru.yandex.practicum.commerce.interaction.api.dto;
+package ru.yandex.practicum.commerce.interaction.api.dto.warehouse;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -11,9 +11,10 @@ import java.util.UUID;
 @Builder
 @Getter
 @Setter
-public class ShoppingCartDto {
-    @NotNull
-    private UUID shoppingCartId;
+public class AssemblyProductsForOrderRequest {
     @NotNull
     private Map<UUID, Integer> products;
+
+    @NotNull
+    private UUID orderId;
 }

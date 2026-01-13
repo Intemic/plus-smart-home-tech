@@ -1,8 +1,9 @@
 package ru.yandex.practicum.commerce.warehouse.controller;
 
+import jakarta.validation.constraints.NotNull;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.commerce.interaction.api.dto.*;
+import ru.yandex.practicum.commerce.interaction.api.dto.warehouse.*;
 import ru.yandex.practicum.commerce.interaction.api.exception.NoSpecifiedProductInWarehouseException;
 import ru.yandex.practicum.commerce.interaction.api.exception.ProductInShoppingCartLowQuantityInWarehouse;
 import ru.yandex.practicum.commerce.interaction.api.exception.SpecifiedProductAlreadyInWarehouseException;
@@ -10,6 +11,7 @@ import ru.yandex.practicum.commerce.interaction.api.interface_.WareHouseOperatio
 import ru.yandex.practicum.commerce.warehouse.service.WareHouseService;
 
 import java.security.SecureRandom;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
@@ -32,9 +34,24 @@ public class WareHouseController implements WareHouseOperation {
     }
 
     @Override
+    public void shipped(ShippedToDeliveryRequest shippedDelivery) {
+        service.shipped(wareHouse, shippedDelivery);
+    }
+
+    @Override
+    public void returnProducts(Map<@NotNull UUID, Integer> products) {
+        service.returnProducts(wareHouse, products);
+    }
+
+    @Override
     public BookedProductsDto checkAvailability(ShoppingCartDto cart)
             throws ProductInShoppingCartLowQuantityInWarehouse {
         return service.checkAvailability(wareHouse, cart);
+    }
+
+    @Override
+    public void assembly(AssemblyProductsForOrderRequest assemblyProducts) {
+        service.assembly(wareHouse, assemblyProducts);
     }
 
     @Override

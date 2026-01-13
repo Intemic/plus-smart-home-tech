@@ -23,4 +23,26 @@ CREATE TABLE IF NOT EXISTS ware_house_products (
     FOREIGN KEY(ware_house_id) REFERENCES ware_houses(id) ON DELETE CASCADE,
     FOREIGN KEY(product_id) REFERENCES products(id) ON DELETE CASCADE,
     CONSTRAINT unique_key UNIQUE(ware_house_id, product_id)
-)
+);
+
+CREATE TABLE IF NOT EXISTS order_bookings (
+    order_id UUID NOT NULL,
+    ware_house_id UUID NOT NULL,
+    delivery_id UUID,
+--    product_id UUID NOT NULL,
+--    quantity integer,
+    FOREIGN KEY(ware_house_id) REFERENCES ware_houses(id) ON DELETE CASCADE,
+    FOREIGN KEY(product_id) REFERENCES products(id) ON DELETE CASCADE,
+--    CONSTRAINT unique_key UNIQUE(order_id, ware_house_id, product_id)
+    CONSTRAINT unique_key UNIQUE(order_id, ware_house_id)
+);
+
+CREATE TABLE IF NOT EXISTS order_booking_products (
+    order_id UUID NOT NULL,
+    ware_house_id UUID NOT NULL,
+    product_id UUID NOT NULL,
+    quantity integer,
+    FOREIGN KEY(ware_house_id) REFERENCES ware_houses(id) ON DELETE CASCADE,
+    FOREIGN KEY(product_id) REFERENCES products(id) ON DELETE CASCADE,
+    CONSTRAINT unique_key UNIQUE(order_id, ware_house_id, product_id)
+);

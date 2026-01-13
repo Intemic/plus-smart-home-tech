@@ -33,6 +33,7 @@ public class ErrorHandler {
                 .message(ex.getMessage())
                 .status(HttpStatus.NOT_FOUND.toString())
                 .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
+                .exceptionClass(ex.getClass().getSimpleName())
                 .build();
     }
 
@@ -46,6 +47,7 @@ public class ErrorHandler {
                 .message(ex.getMessage())
                 .status(HttpStatus.BAD_REQUEST.toString())
                 .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
+                .exceptionClass(ex.getClass().getSimpleName())
                 .build();
     }
 
@@ -58,6 +60,7 @@ public class ErrorHandler {
                 .message("Внутренняя ошибка сервера")
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
                 .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
+                .exceptionClass(ex.getClass().getSimpleName())
                 .build();
     }
 }

@@ -1,7 +1,7 @@
 package ru.yandex.practicum.commerce.interaction.api.client;
 
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.commerce.interaction.api.dto.*;
+import ru.yandex.practicum.commerce.interaction.api.dto.warehouse.*;
 import ru.yandex.practicum.commerce.interaction.api.exception.*;
 
 @Component
