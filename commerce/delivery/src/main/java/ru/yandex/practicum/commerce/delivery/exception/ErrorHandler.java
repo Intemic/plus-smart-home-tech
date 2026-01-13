@@ -1,4 +1,4 @@
-package ru.yandex.practicum.commerce.warehouse.exception;
+package ru.yandex.practicum.commerce.delivery.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,9 +25,10 @@ public class ErrorHandler {
         return stringWriter.toString();
     }
 
-    @ExceptionHandler({})
+    @ExceptionHandler({NoDeliveryFoundException.class,
+            NotFoundResource.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiError handleNotFoundResource(NotFoundResource ex) {
+    public ApiError handleNotFoundResource(RuntimeException ex) {
         log.error(convertStackTraceToString(ex));
         return ApiError.builder()
                 .message(ex.getMessage())
@@ -37,11 +38,9 @@ public class ErrorHandler {
                 .build();
     }
 
-    @ExceptionHandler({SpecifiedProductAlreadyInWarehouseException.class,
-            ProductInShoppingCartLowQuantityInWarehouse.class,
-            NoSpecifiedProductInWarehouseException.class})
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleBadRequest(RuntimeException ex) {
+    public ApiError handleBadRequest(NoOrderFoundException ex) {
         log.error(convertStackTraceToString(ex));
         return ApiError.builder()
                 .message(ex.getMessage())

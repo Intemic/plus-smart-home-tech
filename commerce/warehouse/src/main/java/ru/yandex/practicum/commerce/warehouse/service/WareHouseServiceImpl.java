@@ -72,6 +72,7 @@ public class WareHouseServiceImpl implements WareHouseService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BookedProductsDto checkAvailability(UUID wareHouseId, ShoppingCartDto cart)
             throws ProductInShoppingCartLowQuantityInWarehouse,
             NotFoundResource {

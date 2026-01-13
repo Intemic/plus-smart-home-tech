@@ -1,9 +1,7 @@
 package ru.yandex.practicum.commerce.delivery.model;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import ru.yandex.practicum.commerce.interaction.api.enum_.DeliveryState;
 
 import java.util.UUID;
@@ -12,6 +10,8 @@ import java.util.UUID;
 @Entity(name = "deliverys")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Delivery {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

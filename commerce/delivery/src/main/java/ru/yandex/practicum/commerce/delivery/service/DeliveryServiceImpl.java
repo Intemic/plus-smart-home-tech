@@ -7,8 +7,10 @@ import org.springframework.transaction.support.TransactionTemplate;
 import ru.yandex.practicum.commerce.delivery.model.Delivery;
 import ru.yandex.practicum.commerce.delivery.storage.DeliveryRepository;
 import ru.yandex.practicum.commerce.interaction.api.client.OrderClient;
+import ru.yandex.practicum.commerce.interaction.api.client.WareHouseClient;
 import ru.yandex.practicum.commerce.interaction.api.dto.delivery.DeliveryDto;
 import ru.yandex.practicum.commerce.interaction.api.dto.order.OrderDto;
+import ru.yandex.practicum.commerce.interaction.api.dto.warehouse.ShippedToDeliveryRequest;
 import ru.yandex.practicum.commerce.interaction.api.enum_.DeliveryState;
 import ru.yandex.practicum.commerce.interaction.api.exception.NoDeliveryFoundException;
 
@@ -22,6 +24,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     private final DeliveryRepository repository;
     private final OrderClient orderClient;
     private final TransactionTemplate transactionTemplate;
+    private final WareHouseClient wareHouseClient;
     @Value("${delivery.main.baseCost:5.0}")
     private double baseCost;
 
@@ -32,7 +35,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     public void successful(UUID orderId) throws NoDeliveryFoundException {
-        Delivery delivery = changeState(orderId, DELIVERED);
+        changeState(orderId, DELIVERED);
         orderClient.setDeliveryOrder(orderId);
     }
 
@@ -40,12 +43,15 @@ public class DeliveryServiceImpl implements DeliveryService {
     public void picked(UUID orderId) throws NoDeliveryFoundException {
         Delivery delivery = changeState(orderId, IN_PROGRESS);
         orderClient.assemblyOrder(orderId);
-        // TODO : здесь нужно обратитmся к складу
+        wareHouseClient.shipped(ShippedToDeliveryRequest.builder()
+                .orderId(orderId)
+                .deliveryId(delivery.getDeliveryId())
+                .build());
     }
 
     @Override
     public void failed(UUID orderId) throws NoDeliveryFoundException {
-        Delivery delivery = changeState(orderId, FAILED);
+        changeState(orderId, FAILED);
         orderClient.setDeliveryFailedOrder(orderId);
     }
 
