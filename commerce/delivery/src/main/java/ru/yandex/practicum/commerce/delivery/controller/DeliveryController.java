@@ -43,4 +43,9 @@ public class DeliveryController implements DeliveryOperation {
     public Double cost(OrderDto order) throws NoDeliveryFoundException {
         return service.cost(order);
     }
+
+    @Override
+    public void cancel(UUID orderId) throws NoDeliveryFoundException {
+        service.cancel(orderId);
+    }
 }

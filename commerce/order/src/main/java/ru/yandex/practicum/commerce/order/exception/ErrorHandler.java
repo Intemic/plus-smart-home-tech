@@ -1,11 +1,11 @@
-package ru.yandex.practicum.commerce.delivery.exception;
+package ru.yandex.practicum.commerce.order.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.yandex.practicum.commerce.interaction.api.exception.*;
+import ru.yandex.practicum.commerce.interaction.api.exception.ApiError;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -24,32 +24,6 @@ public class ErrorHandler {
         ex.printStackTrace(new PrintWriter(stringWriter));
         return stringWriter.toString();
     }
-
-    @ExceptionHandler({NoDeliveryFoundException.class,
-            NotFoundResource.class})
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiError handleNotFoundResource(RuntimeException ex) {
-        log.error(convertStackTraceToString(ex));
-        return ApiError.builder()
-                .message(ex.getMessage())
-                .status(HttpStatus.NOT_FOUND.toString())
-                .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
-                .exceptionClass(ex.getClass().getSimpleName())
-                .build();
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleBadRequest(NoOrderFoundException ex) {
-        log.error(convertStackTraceToString(ex));
-        return ApiError.builder()
-                .message(ex.getMessage())
-                .status(HttpStatus.BAD_REQUEST.toString())
-                .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
-                .exceptionClass(ex.getClass().getSimpleName())
-                .build();
-    }
-
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

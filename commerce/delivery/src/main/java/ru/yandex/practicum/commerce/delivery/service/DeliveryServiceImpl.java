@@ -89,10 +89,15 @@ public class DeliveryServiceImpl implements DeliveryService {
         resultCost += order.getDeliveryVolume() * 0.2;
 
         // Для учёта адреса доставки будем использовать упрощённую схему
-       if (!delivery.getToAddress().getStreet().equals(address.getStreet()))
+        if (!delivery.getToAddress().getStreet().equals(address.getStreet()))
             resultCost += resultCost * 0.2;
 
         return resultCost;
+    }
+
+    @Override
+    public void cancel(UUID orderId) throws NoDeliveryFoundException {
+        changeState(orderId, CANCELLED);
     }
 
     private Delivery changeState(UUID orderId, DeliveryState state) {

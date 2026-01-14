@@ -1,6 +1,7 @@
 package ru.yandex.practicum.commerce.order.service;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import ru.yandex.practicum.commerce.interaction.api.dto.order.CreateNewOrderRequest;
 import ru.yandex.practicum.commerce.interaction.api.dto.order.OrderDto;
 import ru.yandex.practicum.commerce.interaction.api.dto.order.ProductReturnRequest;
@@ -11,7 +12,7 @@ import ru.yandex.practicum.commerce.interaction.api.exception.NotAuthorizedUserE
 import java.util.UUID;
 
 public interface OrderService {
-    Page<OrderDto> getOrders(String username)
+    Page<OrderDto> getOrders(String username, Pageable pageable)
             throws NotAuthorizedUserException;
 
     OrderDto createOrder(CreateNewOrderRequest newOrder)
@@ -45,5 +46,8 @@ public interface OrderService {
             throws NoOrderFoundException;
 
     OrderDto assemblyFailedOrder(UUID orderId)
+            throws NoOrderFoundException;
+
+    public OrderDto cancel(UUID orderId)
             throws NoOrderFoundException;
 }

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
+import ru.yandex.practicum.commerce.interaction.api.client.DeliveryClient;
 import ru.yandex.practicum.commerce.interaction.api.client.OrderClient;
 import ru.yandex.practicum.commerce.interaction.api.client.ShoppingStoreClient;
 import ru.yandex.practicum.commerce.interaction.api.dto.order.OrderDto;
@@ -28,12 +29,13 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
-    private static final Double DELIVERY_PRICE = 50.0;
     private final PaymentRepository repository;
     private final ShoppingStoreClient storeClient;
     private final OrderClient orderClient;
     private final TransactionTemplate transactionTemplate;
     private final ObjectMapper objectMapper;
+    private final DeliveryClient deliveryClient;
+
     @Value("${payment.main.taxRate:10}")
     private int taxRate;
 
@@ -42,10 +44,12 @@ public class PaymentServiceImpl implements PaymentService {
     public PaymentDto make(OrderDto order) throws NotEnoughInfoInOrderToCalculateException {
         log.info("Формирование оплаты для заказа: %s".formatted(convertToString(order)));
         double productCost = getProductCost(order);
+        double deliveryPrice = deliveryClient.cost(order);
+
         Payment payment = Payment.builder()
                 .orderId(order.getOrderId())
                 .totalPrice(calculateTotalCost(order))
-                .deliveryPrice(DELIVERY_PRICE)
+                .deliveryPrice(deliveryPrice)
                 .productPrice(productCost)
                 .state(PENDING)
                 .taxRate(getFeeTotal(productCost))
@@ -57,7 +61,9 @@ public class PaymentServiceImpl implements PaymentService {
     public Double calculateTotalCost(OrderDto order) throws NotEnoughInfoInOrderToCalculateException {
         log.info("Расчёт полной стоимости заказа: %s".formatted(convertToString(order)));
         double productCost = getProductCost(order);
-        return productCost + getFeeTotal(productCost) + DELIVERY_PRICE;
+        double deliveryPrice = deliveryClient.cost(order);
+
+        return productCost + getFeeTotal(productCost) + deliveryPrice;
     }
 
     @Override

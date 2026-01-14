@@ -19,6 +19,9 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @Column(name = "user_name", nullable = false)
+    private String userName;
+
     @Column(name = "cart_id", nullable = false)
     private UUID shoppingCartId;
 
@@ -45,12 +48,12 @@ public class Order {
 
     private boolean fragile;
 
-//    @Column(name = "total_price")
-//    private Double totalPrice;
-//
-//    @Column(name = "delivery_price")
-//    private Double deliveryPrice;
-//
-//    @Column(name = "product_price")
-//    private Double productPrice;
+    @Column(name = "total_price")
+    private Double totalPrice;
+
+    @Column(name = "delivery_price")
+    private Double deliveryPrice;
+
+    @Column(name = "product_price")
+    private Double productPrice;
 }

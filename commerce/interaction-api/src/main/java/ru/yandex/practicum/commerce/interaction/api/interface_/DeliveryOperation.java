@@ -25,4 +25,7 @@ public interface DeliveryOperation {
 
     @PostMapping("/cost")
     Double cost(@NotNull @Valid OrderDto order) throws NoDeliveryFoundException;
+
+    @PostMapping("/cancel")
+    void cancel(@NotNull @Valid UUID orderId) throws NoDeliveryFoundException;
 }
