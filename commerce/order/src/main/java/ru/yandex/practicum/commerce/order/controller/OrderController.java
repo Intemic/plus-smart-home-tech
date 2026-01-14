@@ -103,7 +103,9 @@ public class OrderController implements OrderOperation {
     }
 
     @Override
-    public OrderDto cancel(UUID orderId) throws NoOrderFoundException, InvalidOperation {
+    public OrderDto cancel(UUID orderId)
+            throws NoOrderFoundException,
+            InvalidOperation {
         return service.cancel(orderId);
     }
 

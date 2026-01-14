@@ -73,7 +73,7 @@ public class OrderServiceImpl implements OrderService {
         return OrderMapper.mapToDto(
                 transactionTemplate.execute((exec) -> {
                     order.setState(PRODUCT_RETURNED);
-                    return orderRepository.save(order);
+                   return orderRepository.save(order);
                 })
         );
     }

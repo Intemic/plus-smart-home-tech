@@ -28,8 +28,8 @@ public class OrderBooking {
     @CollectionTable(
             name = "order_booking_products",
             joinColumns = {
-                    @JoinColumn(name = "order_id"),
-                    @JoinColumn(name = "ware_house_id")
+                    @JoinColumn(name = "order_id", referencedColumnName = "order_id"),
+                    @JoinColumn(name = "ware_house_id", referencedColumnName = "ware_house_id")
             }
     )
     @MapKeyColumn(name = "product_id")

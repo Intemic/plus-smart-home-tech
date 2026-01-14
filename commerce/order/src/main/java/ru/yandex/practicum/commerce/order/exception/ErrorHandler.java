@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.yandex.practicum.commerce.interaction.api.exception.ApiError;
+import ru.yandex.practicum.commerce.interaction.api.exception.*;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -25,15 +25,42 @@ public class ErrorHandler {
         return stringWriter.toString();
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ApiError handleException(Exception ex) {
+    private ApiError getApiErrror(Exception ex, HttpStatus status) {
         log.error(convertStackTraceToString(ex));
         return ApiError.builder()
                 .message(ex.getMessage())
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
+                .status(status.toString())
                 .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
                 .exceptionClass(ex.getClass().getSimpleName())
                 .build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ApiError HandleNotAuthorizedUserException(NotAuthorizedUserException ex) {
+        return getApiErrror(ex, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler({NoSpecifiedProductInWarehouseException.class,
+            NoOrderFoundException.class,
+            InvalidOperation.class,
+            ProductInShoppingCartLowQuantityInWarehouse.class,
+            NotEnoughInfoInOrderToCalculateException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleBadRequest(RuntimeException ex) {
+        return getApiErrror(ex, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({NotFoundResource.class,
+            NoDeliveryFoundException.class})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiError handleNotFound(RuntimeException ex) {
+        return getApiErrror(ex, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ApiError handleException(Exception ex) {
+        return getApiErrror(ex, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
