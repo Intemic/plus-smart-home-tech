@@ -2,7 +2,6 @@ package ru.yandex.practicum.commerce.delivery.service;
 
 import ru.yandex.practicum.commerce.interaction.api.dto.delivery.DeliveryDto;
 import ru.yandex.practicum.commerce.interaction.api.dto.order.OrderDto;
-import ru.yandex.practicum.commerce.interaction.api.exception.InvalidOperation;
 import ru.yandex.practicum.commerce.interaction.api.exception.NoDeliveryFoundException;
 
 import java.util.UUID;

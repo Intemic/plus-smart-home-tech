@@ -29,6 +29,22 @@ spring:
                   maxBackoff: 50ms
                   factor: 2
                   basedOnPreviousValue: false
+        - id: delivery_circuitbreaker_route
+          uri: lb://delivery
+          predicates:
+            - Path=/delivery/**
+        - id: order_circuitbreaker_route
+          uri: lb://order
+          predicates:
+            - Path=/order/**
+        - id: payment_circuitbreaker_route
+          uri: lb://payment
+          predicates:
+            - Path=/payment/**
+        - id: warehouse_circuitbreaker_route
+          uri: lb://warehouse
+          predicates:
+            - Path=/warehouse/**
 
 resilience4j:
   circuitbreaker:

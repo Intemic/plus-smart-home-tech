@@ -3,8 +3,10 @@ package ru.yandex.practicum.commerce.order.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Feign;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import ru.yandex.practicum.commerce.order.decoder.ClientDecoder;
 
+@Configuration
 public class FeignConfig {
     @Bean
     public Feign.Builder feignBuilder() {

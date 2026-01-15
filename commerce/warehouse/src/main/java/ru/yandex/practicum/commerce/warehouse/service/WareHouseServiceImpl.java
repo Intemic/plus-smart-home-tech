@@ -152,7 +152,7 @@ public class WareHouseServiceImpl implements WareHouseService {
         log.info("Возврат товара на склад");
         List<Product> productsExists = productRepository.findAllById(products.keySet());
         // получим текущее наличие
-        WareHouse wareHouse = wareHouseRepository.findAllByIdProductIdIn(wareHouseId,
+        WareHouse wareHouse = wareHouseRepository.findByIdProductKeyIn(wareHouseId,
                         products.keySet())
                 .orElseThrow(() -> new NotFoundResource("Не найден склад с id - %s".formatted(wareHouseId)));
 
@@ -176,7 +176,7 @@ public class WareHouseServiceImpl implements WareHouseService {
             ProductInShoppingCartLowQuantityInWarehouse {
         log.info("Подготовка товара к выдаче");
         // получим текущее наличие
-        WareHouse wareHouse = wareHouseRepository.findAllByIdProductIdIn(wareHouseId,
+        WareHouse wareHouse = wareHouseRepository.findByIdProductKeyIn(wareHouseId,
                         assemblyProducts.getProducts().keySet())
                 .orElseThrow(() -> new NotFoundResource("Не найден склад с id - %s".formatted(wareHouseId)));
 

@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS ware_house_products (
 );
 
 CREATE TABLE IF NOT EXISTS order_bookings (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     order_id UUID NOT NULL,
     ware_house_id UUID NOT NULL,
     delivery_id UUID,
@@ -34,11 +35,10 @@ CREATE TABLE IF NOT EXISTS order_bookings (
 );
 
 CREATE TABLE IF NOT EXISTS order_booking_products (
-    order_id UUID NOT NULL,
-    ware_house_id UUID NOT NULL,
+    order_booking_id BIGINT,
     product_id UUID NOT NULL,
     quantity integer,
-    FOREIGN KEY(ware_house_id) REFERENCES ware_houses(id) ON DELETE CASCADE,
+    FOREIGN KEY(order_booking_id) REFERENCES order_bookings(id) ON DELETE CASCADE,
     FOREIGN KEY(product_id) REFERENCES products(id) ON DELETE CASCADE,
-    CONSTRAINT unique_key_order_booking_products UNIQUE(order_id, ware_house_id, product_id)
+    CONSTRAINT unique_key_order_booking_products UNIQUE(order_booking_id, product_id)
 );

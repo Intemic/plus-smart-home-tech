@@ -6,6 +6,6 @@ import ru.yandex.practicum.commerce.warehouse.model.OrderBooking;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface OrderBookingRepository extends JpaRepository<OrderBooking, UUID> {
+public interface OrderBookingRepository extends JpaRepository<OrderBooking, Long> {
     Optional<OrderBooking> findByOrderId(UUID orderId);
 }

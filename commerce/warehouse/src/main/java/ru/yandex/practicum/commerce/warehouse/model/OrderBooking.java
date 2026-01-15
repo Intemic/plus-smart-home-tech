@@ -14,6 +14,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class OrderBooking {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @Column(name = "order_id")
     private UUID orderId;
 
@@ -27,10 +30,7 @@ public class OrderBooking {
     @ElementCollection
     @CollectionTable(
             name = "order_booking_products",
-            joinColumns = {
-                    @JoinColumn(name = "order_id", referencedColumnName = "order_id"),
-                    @JoinColumn(name = "ware_house_id", referencedColumnName = "ware_house_id")
-            }
+            joinColumns = @JoinColumn(name = "order_booking_id", referencedColumnName = "id")
     )
     @MapKeyColumn(name = "product_id")
     @Column(name = "quantity")

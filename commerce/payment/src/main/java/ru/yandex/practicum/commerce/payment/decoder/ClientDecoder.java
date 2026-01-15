@@ -1,6 +1,5 @@
 package ru.yandex.practicum.commerce.payment.decoder;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Response;
 import feign.codec.ErrorDecoder;
