@@ -8,4 +8,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Loggable {
+    String msgBefore() default "Вызов метода:";
+
+    String msgAfter() default "Результат выполнения: ";
 }

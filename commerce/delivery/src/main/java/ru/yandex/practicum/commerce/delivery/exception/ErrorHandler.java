@@ -25,41 +25,32 @@ public class ErrorHandler {
         return stringWriter.toString();
     }
 
+    private ApiError getApiErrror(Exception ex, HttpStatus status) {
+        log.error(convertStackTraceToString(ex));
+        return ApiError.builder()
+                .message(ex.getMessage())
+                .status(status.toString())
+                .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
+                .exceptionClass(ex.getClass().getSimpleName())
+                .build();
+    }
     @ExceptionHandler({NoDeliveryFoundException.class,
             NotFoundResource.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiError handleNotFoundResource(RuntimeException ex) {
-        log.error(convertStackTraceToString(ex));
-        return ApiError.builder()
-                .message(ex.getMessage())
-                .status(HttpStatus.NOT_FOUND.toString())
-                .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
-                .exceptionClass(ex.getClass().getSimpleName())
-                .build();
+        return getApiErrror(ex, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleBadRequest(NoOrderFoundException ex) {
-        log.error(convertStackTraceToString(ex));
-        return ApiError.builder()
-                .message(ex.getMessage())
-                .status(HttpStatus.BAD_REQUEST.toString())
-                .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
-                .exceptionClass(ex.getClass().getSimpleName())
-                .build();
+        return getApiErrror(ex, HttpStatus.BAD_REQUEST);
     }
 
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiError handleException(Exception ex) {
-        log.error(convertStackTraceToString(ex));
-        return ApiError.builder()
-                .message(ex.getMessage())
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
-                .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
-                .exceptionClass(ex.getClass().getSimpleName())
-                .build();
+        return getApiErrror(ex, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

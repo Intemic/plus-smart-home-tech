@@ -16,6 +16,7 @@ import ru.yandex.practicum.commerce.interaction.api.dto.warehouse.AddressDto;
 import ru.yandex.practicum.commerce.interaction.api.dto.warehouse.ShippedToDeliveryRequest;
 import ru.yandex.practicum.commerce.interaction.api.enum_.DeliveryState;
 import ru.yandex.practicum.commerce.interaction.api.exception.NoDeliveryFoundException;
+import ru.yandex.practicum.commerce.interaction.api.logging.Loggable;
 
 import static ru.yandex.practicum.commerce.interaction.api.enum_.DeliveryState.*;
 
@@ -32,6 +33,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     private double baseCost;
 
     @Override
+    @Loggable(msgBefore = "Создание доставки")
     @Transactional
     public DeliveryDto create(DeliveryDto deliveryDto) {
         Delivery delivery = DeliveryMapper.mapFromDto(deliveryDto);
@@ -40,12 +42,14 @@ public class DeliveryServiceImpl implements DeliveryService {
     }
 
     @Override
+    @Loggable(msgBefore = "Установка статуса доставлен: ")
     public void successful(UUID orderId) throws NoDeliveryFoundException {
         changeState(orderId, DELIVERED);
         orderClient.setDeliveryOrder(orderId);
     }
 
     @Override
+    @Loggable(msgBefore = "Установка статуса в процессе выполнения: ")
     public void picked(UUID orderId) throws NoDeliveryFoundException {
         Delivery delivery = changeState(orderId, IN_PROGRESS);
         orderClient.assemblyOrder(orderId);
@@ -56,6 +60,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     }
 
     @Override
+    @Loggable(msgBefore = "Установка статуса не удалось доставить: ")
     public void failed(UUID orderId) throws NoDeliveryFoundException {
         changeState(orderId, FAILED);
         orderClient.setDeliveryFailedOrder(orderId);
@@ -63,6 +68,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     @Transactional(readOnly = true)
+    @Loggable(msgBefore = "Расчет стоимости: ")
     public Double cost(OrderDto order) throws NoDeliveryFoundException {
         // базовая стоимость равна 5.0
         Double resultCost = 0.0;
@@ -96,6 +102,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     }
 
     @Override
+    @Loggable(msgBefore = "Установка статуса отменен: ")
     public void cancel(UUID orderId) throws NoDeliveryFoundException {
         changeState(orderId, CANCELLED);
     }
