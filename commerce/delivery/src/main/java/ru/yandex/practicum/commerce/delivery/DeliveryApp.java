@@ -7,7 +7,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @SpringBootApplication(scanBasePackages = {
         "ru.yandex.practicum.commerce.delivery",
-        "ru.yandex.practicum.commerce.interaction.api.logging"
+        "ru.yandex.practicum.commerce.interaction.api"
 })
 @EnableFeignClients(basePackages = "ru.yandex.practicum.commerce.interaction.api.client")
 @EnableAspectJAutoProxy

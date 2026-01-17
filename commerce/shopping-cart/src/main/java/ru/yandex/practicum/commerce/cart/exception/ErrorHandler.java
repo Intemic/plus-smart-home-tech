@@ -25,60 +25,44 @@ public class ErrorHandler {
         return stringWriter.toString();
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ApiError handleNotAuthorizedUserException(NotAuthorizedUserException ex) {
+    private ApiError getApiErrror(Exception ex, HttpStatus status) {
         log.error(convertStackTraceToString(ex));
         return ApiError.builder()
                 .message(ex.getMessage())
-                .status(HttpStatus.UNAUTHORIZED.toString())
+                .status(status.toString())
                 .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
+                .exceptionClass(ex.getClass().getSimpleName())
                 .build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ApiError handleNotAuthorizedUserException(NotAuthorizedUserException ex) {
+        return getApiErrror(ex, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler({InvalidOperation.class,
             NoProductsInShoppingCartException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleInvalidOperation(RuntimeException ex) {
-        log.error(convertStackTraceToString(ex));
-        return ApiError.builder()
-                .message(ex.getMessage())
-                .status(HttpStatus.BAD_REQUEST.toString())
-                .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
-                .build();
+        return getApiErrror(ex, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handleNoQuantityAvailable(NoQuantityAvailable ex) {
-        log.error(convertStackTraceToString(ex));
-        return ApiError.builder()
-                .message(ex.getMessage())
-                .status(HttpStatus.CONFLICT.toString())
-                .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
-                .build();
+        return getApiErrror(ex, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiError handleNotFoundResource(NotFoundResource ex) {
-        log.error(convertStackTraceToString(ex));
-        return ApiError.builder()
-                .message(ex.getMessage())
-                .status(HttpStatus.NOT_FOUND.toString())
-                .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
-                .build();
+        return getApiErrror(ex, HttpStatus.NOT_FOUND);
     }
-
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiError handleException(Exception ex) {
-        log.error(convertStackTraceToString(ex));
-        return ApiError.builder()
-                .message("Внутренняя ошибка сервера")
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
-                .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
-                .build();
+        return getApiErrror(ex, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

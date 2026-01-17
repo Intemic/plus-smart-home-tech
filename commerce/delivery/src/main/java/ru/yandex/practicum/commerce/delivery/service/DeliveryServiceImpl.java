@@ -60,7 +60,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     }
 
     @Override
-    @Loggable(msgBefore = "Установка статуса не удалось доставить: ")
+    @Loggable(msgBefore = "Установка статуса, не удалось доставить: ")
     public void failed(UUID orderId) throws NoDeliveryFoundException {
         changeState(orderId, FAILED);
         orderClient.setDeliveryFailedOrder(orderId);

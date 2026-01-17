@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
 
     @Override
     @Loggable(msgBefore = "Выбор данных по категории :")
+    @Cacheable(cacheManager = "products")
     public Page<ProductDto> getProducts(ProductCategory category, Pageable pageable) {
         Page<ProductDto> page = repository
                 .findAllByProductCategory(category, pageable)
@@ -43,6 +46,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
 
     @Override
     @Loggable(msgBefore = "Поиск устройства: ")
+    @Cacheable(cacheManager = "products")
     public ProductDto getProduct(UUID productId) throws NotFoundResource {
         Product product = repository.findById(productId)
                 .orElseThrow(() -> new NotFoundResource("Не найден продукт с id - %s".formatted(productId)));
@@ -61,6 +65,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     @Override
     @Loggable(msgBefore = "Обновление данных продукта:", msgAfter = "Обновленные данные: ")
     @Transactional
+    @CacheEvict(cacheNames = "products", allEntries = true)
     public ProductDto updateProduct(ProductDto product) throws NotFoundResource {
         Product productOld = repository.findById(product.getProductId())
                 .orElseThrow(() -> new NotFoundResource("Не найден продукт с id - %s"
@@ -72,6 +77,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     @Override
     @Loggable(msgBefore = "Удаление продукта", msgAfter = "Результат удаления продукта:")
     @Transactional
+    @CacheEvict(cacheNames = "products", allEntries = true)
     public boolean deleteProduct(UUID productId) throws NotFoundResource {
         Product product = repository.findById(productId)
                 .orElseThrow(() -> new NotFoundResource("Не найден продукт с id - %s".formatted(productId)));
@@ -83,6 +89,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     @Override
     @Loggable(msgBefore =  "Изменение статуса товара", msgAfter = "Результат обновления статуса:")
     @Transactional
+    @CacheEvict(cacheNames = "products", allEntries = true)
     public boolean changeState(UUID productId, QuantityState quantityState) throws NotFoundResource {
         Product product = repository.findById(productId)
                 .orElseThrow(() -> new NotFoundResource("Не найден продукт с id - %s"

@@ -18,6 +18,7 @@ import ru.yandex.practicum.commerce.interaction.api.exception.InvalidOperation;
 import ru.yandex.practicum.commerce.interaction.api.exception.NoOrderFoundException;
 import ru.yandex.practicum.commerce.interaction.api.exception.NoSpecifiedProductInWarehouseException;
 import ru.yandex.practicum.commerce.interaction.api.exception.NotAuthorizedUserException;
+import ru.yandex.practicum.commerce.interaction.api.logging.Loggable;
 import ru.yandex.practicum.commerce.order.mapper.OrderMapper;
 import ru.yandex.practicum.commerce.order.model.Order;
 import ru.yandex.practicum.commerce.order.storage.OrderRepository;
@@ -43,6 +44,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Loggable(msgBefore = "Создание заказа: ")
     @Transactional
     public OrderDto createOrder(CreateNewOrderRequest newOrder)
             throws NoSpecifiedProductInWarehouseException {
@@ -62,6 +64,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
+    @Loggable(msgBefore = "Возврат товаров: ")
     public OrderDto setReturnOrder(ProductReturnRequest productReturn)
             throws NoOrderFoundException {
         Order order = orderRepository.findById(productReturn.getOrderId())
@@ -80,6 +83,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
+    @Loggable(msgBefore = "Установка статуса оплачен: ")
     public OrderDto setPaymentOrder(UUID orderId)
             throws NoOrderFoundException {
         return OrderMapper.mapToDto(changeState(orderId, PAID));
@@ -87,6 +91,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
+    @Loggable(msgBefore = "Установка статуса неудачная оплата: ")
     public OrderDto setPaymentFailedOrder(UUID orderId)
             throws NoOrderFoundException {
         return OrderMapper.mapToDto(changeState(orderId, PAYMENT_FAILED));
@@ -94,6 +99,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
+    @Loggable(msgBefore = "Установка статуса доставлен: ")
     public OrderDto setDeliveryOrder(UUID orderId)
             throws NoOrderFoundException {
         return OrderMapper.mapToDto(changeState(orderId, DELIVERED));
@@ -101,6 +107,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
+    @Loggable(msgBefore = "Установка статуса неудачная доставка: ")
     public OrderDto setDeliveryFailedOrder(UUID orderId)
             throws NoOrderFoundException {
         return OrderMapper.mapToDto(changeState(orderId, DELIVERY_FAILED));
@@ -108,6 +115,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
+    @Loggable(msgBefore = "Установка статуса завершён: ")
     public OrderDto setCompletedOrder(UUID orderId)
             throws NoOrderFoundException {
         return OrderMapper.mapToDto(changeState(orderId, COMPLETED));
@@ -115,6 +123,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
+    @Loggable(msgBefore = "Расчет полной стоимости заказа: ")
     public OrderDto calculateTotalOrder(UUID orderId)
             throws NoOrderFoundException {
 
@@ -128,6 +137,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
+    @Loggable(msgBefore = "Расчет стоимости доставки: ")
     public OrderDto calculateDeliveryOrder(UUID orderId)
             throws NoOrderFoundException {
 
@@ -141,6 +151,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
+    @Loggable(msgBefore = "Установка статуса заказ собран: ")
     public OrderDto assemblyOrder(UUID orderId)
             throws NoOrderFoundException {
         return OrderMapper.mapToDto(changeState(orderId, ASSEMBLED));
@@ -148,12 +159,15 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
+    @Loggable(msgBefore = "Установка статуса неудачная сборка: ")
     public OrderDto assemblyFailedOrder(UUID orderId)
             throws NoOrderFoundException {
         return OrderMapper.mapToDto(changeState(orderId, ASSEMBLY_FAILED));
     }
 
     @Override
+    @Loggable(msgBefore = "Установка статуса отменен: ")
+    @Transactional
     public OrderDto cancel(UUID orderId)
             throws NoOrderFoundException,
             InvalidOperation {

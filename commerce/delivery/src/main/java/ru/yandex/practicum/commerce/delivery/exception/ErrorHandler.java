@@ -34,6 +34,7 @@ public class ErrorHandler {
                 .exceptionClass(ex.getClass().getSimpleName())
                 .build();
     }
+
     @ExceptionHandler({NoDeliveryFoundException.class,
             NotFoundResource.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)

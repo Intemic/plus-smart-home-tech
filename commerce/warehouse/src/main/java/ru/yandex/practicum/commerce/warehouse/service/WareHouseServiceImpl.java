@@ -2,7 +2,6 @@ package ru.yandex.practicum.commerce.warehouse.service;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.commerce.interaction.api.dto.warehouse.*;
@@ -10,6 +9,7 @@ import ru.yandex.practicum.commerce.interaction.api.exception.NoSpecifiedProduct
 import ru.yandex.practicum.commerce.interaction.api.exception.NotFoundResource;
 import ru.yandex.practicum.commerce.interaction.api.exception.ProductInShoppingCartLowQuantityInWarehouse;
 import ru.yandex.practicum.commerce.interaction.api.exception.SpecifiedProductAlreadyInWarehouseException;
+import ru.yandex.practicum.commerce.interaction.api.logging.Loggable;
 import ru.yandex.practicum.commerce.warehouse.mapper.AddressMapper;
 import ru.yandex.practicum.commerce.warehouse.mapper.ProductMapper;
 import ru.yandex.practicum.commerce.warehouse.model.Address;
@@ -26,7 +26,6 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class WareHouseServiceImpl implements WareHouseService {
@@ -51,10 +50,10 @@ public class WareHouseServiceImpl implements WareHouseService {
 
     @Override
     @Transactional
+    @Loggable(msgBefore = "Добавляем новый товар на склад ", msgAfter = "Информация о товаре сохранена ")
     public void addProduct(UUID wareHouseId, NewProductInWarehouseRequest newProduct)
             throws SpecifiedProductAlreadyInWarehouseException,
             NotFoundResource {
-        log.info("Добавляем новый товар на склад");
         WareHouse wareHouse = wareHouseRepository.findById(wareHouseId).orElseThrow(
                 () -> new NotFoundResource("Не найден склад с id - %s".formatted(wareHouseId)));
 
@@ -68,15 +67,14 @@ public class WareHouseServiceImpl implements WareHouseService {
 
         wareHouse.getProducts().put(product.getId(), 0);
         wareHouseRepository.save(wareHouse);
-        log.info("Информация о товаре сохранена");
     }
 
     @Override
     @Transactional(readOnly = true)
+    @Loggable(msgBefore = "Проверка доступности для корзины: ", msgAfter = "Проверка выполнена: ")
     public BookedProductsDto checkAvailability(UUID wareHouseId, ShoppingCartDto cart)
             throws ProductInShoppingCartLowQuantityInWarehouse,
             NotFoundResource {
-        log.debug("Проверка доступности для корзины {}", cart.getShoppingCartId());
 
         WareHouse wareHouse = wareHouseRepository.findById(wareHouseId).orElseThrow(
                 () -> new NotFoundResource("Не найден склад с id - %s".formatted(wareHouseId)));
@@ -117,10 +115,10 @@ public class WareHouseServiceImpl implements WareHouseService {
 
     @Override
     @Transactional
+    @Loggable(msgBefore = "Обновление кол-ва у товара")
     public void addProductQuantity(UUID wareHouseId, AddProductToWarehouseRequest productQuantity)
             throws NoSpecifiedProductInWarehouseException,
             NotFoundResource {
-        log.info("Обновление кол-ва у товара");
 
         WareHouse wareHouse = wareHouseRepository.findById(wareHouseId).orElseThrow(
                 () -> new NotFoundResource("Не найден склад с id - %s".formatted(wareHouseId)));
@@ -136,6 +134,7 @@ public class WareHouseServiceImpl implements WareHouseService {
 
     @Override
     @Transactional
+    @Loggable(msgBefore = "Передача товаров в доставку")
     public void shipped(UUID wareHouseId, ShippedToDeliveryRequest shippedDelivery)
             throws NotFoundResource {
         OrderBooking orderBooking = orderBookingRepository.findByOrderId(shippedDelivery.getOrderId())
@@ -147,9 +146,9 @@ public class WareHouseServiceImpl implements WareHouseService {
 
     @Override
     @Transactional
+    @Loggable(msgBefore = "Возврат товара на склад", msgAfter = "Возврат товара на склад прошел успешно")
     public void returnProducts(UUID wareHouseId, Map<@NotNull UUID, Integer> products)
             throws NotFoundResource {
-        log.info("Возврат товара на склад");
         List<Product> productsExists = productRepository.findAllById(products.keySet());
         // получим текущее наличие
         WareHouse wareHouse = wareHouseRepository.findByIdProductKeyIn(wareHouseId,
@@ -166,15 +165,14 @@ public class WareHouseServiceImpl implements WareHouseService {
         }
 
         wareHouseRepository.save(wareHouse);
-        log.info("Возврат товара на склад прошел успешно");
     }
 
     @Override
     @Transactional
+    @Loggable(msgBefore = "Подготовка товара к выдаче", msgAfter = "Подготовка товара к выдаче прошла успешно")
     public void assembly(UUID wareHouseId, AssemblyProductsForOrderRequest assemblyProducts)
             throws NotFoundResource,
             ProductInShoppingCartLowQuantityInWarehouse {
-        log.info("Подготовка товара к выдаче");
         // получим текущее наличие
         WareHouse wareHouse = wareHouseRepository.findByIdProductKeyIn(wareHouseId,
                         assemblyProducts.getProducts().keySet())
@@ -201,13 +199,12 @@ public class WareHouseServiceImpl implements WareHouseService {
                 .build();
 
         orderBookingRepository.save(orderBooking);
-        log.info("Подготовка товара к выдаче прошла успешно");
     }
 
     @Override
     @Transactional(readOnly = true)
+    @Loggable(msgBefore = "Получение адреса")
     public AddressDto getAddress(UUID wareHouseId) throws NotFoundResource {
-        log.info("Получение адреса");
 
         WareHouse wareHouse = wareHouseRepository.findById(wareHouseId).orElseThrow(
                 () -> new NotFoundResource("Не найден склад с id - %s".formatted(wareHouseId)));

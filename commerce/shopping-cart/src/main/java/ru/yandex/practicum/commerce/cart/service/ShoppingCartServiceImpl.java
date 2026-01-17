@@ -1,7 +1,6 @@
 package ru.yandex.practicum.commerce.cart.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -13,11 +12,11 @@ import ru.yandex.practicum.commerce.interaction.api.dto.ChangeProductQuantityReq
 import ru.yandex.practicum.commerce.interaction.api.dto.warehouse.ShoppingCartDto;
 import ru.yandex.practicum.commerce.interaction.api.enum_.CartState;
 import ru.yandex.practicum.commerce.interaction.api.exception.*;
+import ru.yandex.practicum.commerce.interaction.api.logging.Loggable;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ShoppingCartServiceImpl implements ShoppingCartService {
@@ -26,37 +25,33 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final TransactionTemplate transactionTemplate;
 
     private Cart getCartInner(String username) throws NotAuthorizedUserException {
-        log.info("Получаем корзину для пользователя");
         if (username == null || username.isBlank())
             throw new NotAuthorizedUserException("Не корректное имя пользователя");
 
         Optional<Cart> optionalCart = repository.findByUserName(username);
         // корзины еще не было, создаем
-        if (optionalCart.isEmpty()) {
+        if (optionalCart.isEmpty())
             optionalCart = Optional.of(repository.save(Cart
                     .builder()
                     .userName(username)
                     .state(CartState.ACTIVE)
                     .build()));
-            log.info("Создана корзина для пользователя - %s".formatted(username));
-        } else {
-            log.info("Корзина уже существует");
-        }
 
         return optionalCart.get();
     }
 
     @Override
+    @Loggable(msgBefore = "Получаем корзину пользователя: ")
     public ShoppingCartDto getCart(String username) throws NotAuthorizedUserException {
         return CartMapper.mapToDto(getCartInner(username));
     }
 
     @Override
+    @Loggable(msgBefore = "Добавляем продукты в корзину: ", msgAfter = "Данные о продуктах обновлены ")
     public ShoppingCartDto addProducts(String username, Map<UUID, Integer> products)
             throws NotAuthorizedUserException,
             NoQuantityAvailable,
             InvalidOperation {
-        log.info("Добавляем продукты в корзину");
         if (username == null || username.isBlank())
             throw new NotAuthorizedUserException("Не корректное имя пользователя");
 
@@ -75,7 +70,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         wareHouseClient.checkAvailability(CartMapper.mapToDto(cart));
 
         Cart cartSaved =  transactionTemplate.execute( status ->  repository.save(cart));
-        log.info("Данные о продуктах обновлены");
 
         assert cartSaved != null;
         return CartMapper.mapToDto(cartSaved);
@@ -83,8 +77,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     @Transactional
+    @Loggable(msgBefore = "Деактивируем корзину: ", msgAfter = "Корзина деактивирована ")
     public void deleteCart(String username) throws NotAuthorizedUserException, NotFoundResource {
-        log.info("Деактивируем корзину");
         if (username == null || username.isBlank())
             throw new NotAuthorizedUserException("Не корректное имя пользователя");
 
@@ -95,16 +89,15 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
         cart.setState(CartState.DEACTIVE);
         repository.save(cart);
-        log.info("Корзина деактивирована");
     }
 
     @Override
     @Transactional
+    @Loggable(msgBefore = "Удаляем продукты: ", msgAfter = "Информация обновлена ")
     public ShoppingCartDto removeProducts(String username, List<UUID> products)
             throws NotAuthorizedUserException,
             NoProductsInShoppingCartException,
             NotFoundResource {
-        log.info("Удаляем продукты");
         if (username == null || username.isBlank())
             throw new NotAuthorizedUserException("Не корректное имя пользователя");
 
@@ -120,17 +113,16 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             throw new NoProductsInShoppingCartException("Отсутствуют продукты для удаления");
 
         setUUID.forEach(uuid -> cart.getProducts().remove(uuid));
-        log.info("Информация обновлена");
 
         return CartMapper.mapToDto(repository.save(cart));
     }
 
     @Override
+    @Loggable(msgBefore = "Изменяем кол-во: ", msgAfter = "Количество изменено")
     public ShoppingCartDto changeQuantity(String username, ChangeProductQuantityRequest changeRequest)
             throws NotAuthorizedUserException,
             NoProductsInShoppingCartException,
             NotFoundResource {
-        log.info("Изменяем кол-во");
         if (username == null || username.isBlank())
             throw new NotAuthorizedUserException("Не корректное имя пользователя");
 
@@ -149,7 +141,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         wareHouseClient.checkAvailability(CartMapper.mapToDto(cart));
 
         Cart cartSaved =  transactionTemplate.execute( status ->  repository.save(cart));
-        log.info("Количество изменено");
 
         assert cartSaved != null;
         return CartMapper.mapToDto(cartSaved);
