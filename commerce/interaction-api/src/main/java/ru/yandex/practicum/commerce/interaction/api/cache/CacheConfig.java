@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 public class CacheConfig {
     @Bean
     public Caffeine caffeine() {
-        return Caffeine.newBuilder().expireAfterWrite(60, TimeUnit.SECONDS);
+        return Caffeine.newBuilder().expireAfterWrite(60, TimeUnit.SECONDS).maximumSize(500);
     }
 
     @Bean

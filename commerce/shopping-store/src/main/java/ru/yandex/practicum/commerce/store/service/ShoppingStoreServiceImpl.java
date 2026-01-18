@@ -32,7 +32,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
 
     @Override
     @Loggable(msgBefore = "Выбор данных по категории :")
-    @Cacheable(cacheManager = "products")
+    @Cacheable(cacheNames = "products")
     public Page<ProductDto> getProducts(ProductCategory category, Pageable pageable) {
         Page<ProductDto> page = repository
                 .findAllByProductCategory(category, pageable)
@@ -46,7 +46,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
 
     @Override
     @Loggable(msgBefore = "Поиск устройства: ")
-    @Cacheable(cacheManager = "products")
+    @Cacheable(cacheNames = "products")
     public ProductDto getProduct(UUID productId) throws NotFoundResource {
         Product product = repository.findById(productId)
                 .orElseThrow(() -> new NotFoundResource("Не найден продукт с id - %s".formatted(productId)));
