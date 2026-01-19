@@ -10,6 +10,7 @@ import ru.yandex.practicum.commerce.interaction.api.dto.order.OrderDto;
 import ru.yandex.practicum.commerce.interaction.api.exception.NoDeliveryFoundException;
 import ru.yandex.practicum.commerce.interaction.api.interface_.DeliveryOperation;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Validated
@@ -40,7 +41,7 @@ public class DeliveryController implements DeliveryOperation {
     }
 
     @Override
-    public Double cost(OrderDto order) throws NoDeliveryFoundException {
+    public BigDecimal cost(OrderDto order) throws NoDeliveryFoundException {
         return service.cost(order);
     }
 

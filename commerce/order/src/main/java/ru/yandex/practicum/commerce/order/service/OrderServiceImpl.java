@@ -144,7 +144,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new NoOrderFoundException("Не найден заказ %s".formatted(orderId)));
 
-        order.setDeliveryPrice(deliveryClient.cost(OrderMapper.mapToDto(order)));
+        order.setDeliveryPrice(deliveryClient.cost(OrderMapper.mapToDto(order)).doubleValue());
 
         return OrderMapper.mapToDto(orderRepository.save(order));
     }

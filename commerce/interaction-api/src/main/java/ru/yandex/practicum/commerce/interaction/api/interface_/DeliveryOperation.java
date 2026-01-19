@@ -8,6 +8,7 @@ import ru.yandex.practicum.commerce.interaction.api.dto.delivery.DeliveryDto;
 import ru.yandex.practicum.commerce.interaction.api.dto.order.OrderDto;
 import ru.yandex.practicum.commerce.interaction.api.exception.NoDeliveryFoundException;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 public interface DeliveryOperation {
@@ -24,7 +25,7 @@ public interface DeliveryOperation {
     void failed(@NotNull UUID orderId) throws NoDeliveryFoundException;
 
     @PostMapping("/cost")
-    Double cost(@NotNull @Valid OrderDto order) throws NoDeliveryFoundException;
+    BigDecimal cost(@NotNull @Valid OrderDto order) throws NoDeliveryFoundException;
 
     @PostMapping("/cancel")
     void cancel(@NotNull @Valid UUID orderId) throws NoDeliveryFoundException;

@@ -43,7 +43,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Loggable(msgBefore = "Формирование оплаты для заказа:")
     public PaymentDto make(OrderDto order) throws NotEnoughInfoInOrderToCalculateException {
         double productCost = getProductCost(order);
-        double deliveryPrice = deliveryClient.cost(order);
+        double deliveryPrice = deliveryClient.cost(order).doubleValue();
 
         Payment payment = Payment.builder()
                 .orderId(order.getOrderId())
@@ -60,7 +60,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Loggable(msgBefore = "Расчёт полной стоимости заказа: ")
     public Double calculateTotalCost(OrderDto order) throws NotEnoughInfoInOrderToCalculateException {
         double productCost = getProductCost(order);
-        double deliveryPrice = deliveryClient.cost(order);
+        double deliveryPrice = deliveryClient.cost(order).doubleValue();
 
         return productCost + getFeeTotal(productCost) + deliveryPrice;
     }

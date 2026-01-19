@@ -4,6 +4,7 @@ import ru.yandex.practicum.commerce.interaction.api.dto.delivery.DeliveryDto;
 import ru.yandex.practicum.commerce.interaction.api.dto.order.OrderDto;
 import ru.yandex.practicum.commerce.interaction.api.exception.NoDeliveryFoundException;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 public interface DeliveryService {
@@ -15,7 +16,7 @@ public interface DeliveryService {
 
     void failed(UUID orderId) throws NoDeliveryFoundException;
 
-    Double cost(OrderDto order) throws NoDeliveryFoundException;
+    BigDecimal cost(OrderDto order) throws NoDeliveryFoundException;
 
     void cancel(UUID orderId) throws NoDeliveryFoundException;
 }
