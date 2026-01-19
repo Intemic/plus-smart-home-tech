@@ -13,7 +13,4 @@ public class FeignConfig {
         return Feign.builder()
                 .errorDecoder(new ClientDecoder(new ObjectMapper()));
     }
-
-    @Bean
-
 }
