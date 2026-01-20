@@ -6,8 +6,6 @@ import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
 import ru.yandex.practicum.grpc.telemetry.event.ScenarioRemovedEventProto;
 import ru.yandex.practicum.kafka.telemetry.event.ScenarioRemovedEventAvro;
 
-import java.time.Instant;
-
 @Component
 @RequiredArgsConstructor
 public class ScenarioRemovedEventHandler implements HubEventHandler{

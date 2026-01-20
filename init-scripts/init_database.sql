@@ -1,3 +1,6 @@
 CREATE DATABASE shopping_store;
 CREATE DATABASE shopping_cart;
 CREATE DATABASE warehouse;
+CREATE DATABASE orders;
+CREATE DATABASE payments;
+CREATE DATABASE deliverys;

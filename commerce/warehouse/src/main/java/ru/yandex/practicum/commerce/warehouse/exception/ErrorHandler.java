@@ -25,15 +25,20 @@ public class ErrorHandler {
         return stringWriter.toString();
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiError handleNotFoundResource(NotFoundResource ex) {
+    private ApiError getApiErrror(Exception ex, HttpStatus status) {
         log.error(convertStackTraceToString(ex));
         return ApiError.builder()
                 .message(ex.getMessage())
-                .status(HttpStatus.NOT_FOUND.toString())
+                .status(status.toString())
                 .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
+                .exceptionClass(ex.getClass().getSimpleName())
                 .build();
+    }
+
+    @ExceptionHandler({})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiError handleNotFoundResource(NotFoundResource ex) {
+        return getApiErrror(ex, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler({SpecifiedProductAlreadyInWarehouseException.class,
@@ -41,23 +46,13 @@ public class ErrorHandler {
             NoSpecifiedProductInWarehouseException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleBadRequest(RuntimeException ex) {
-        log.error(convertStackTraceToString(ex));
-        return ApiError.builder()
-                .message(ex.getMessage())
-                .status(HttpStatus.BAD_REQUEST.toString())
-                .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
-                .build();
+        return getApiErrror(ex, HttpStatus.BAD_REQUEST);
     }
 
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiError handleException(Exception ex) {
-        log.error(convertStackTraceToString(ex));
-        return ApiError.builder()
-                .message("Внутренняя ошибка сервера")
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
-                .timestamp(LocalDateTime.now().format(FORMAT_DATE_TIME))
-                .build();
+        return getApiErrror(ex, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

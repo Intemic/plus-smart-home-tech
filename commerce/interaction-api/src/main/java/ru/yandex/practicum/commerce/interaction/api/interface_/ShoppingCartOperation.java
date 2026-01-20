@@ -2,10 +2,9 @@ package ru.yandex.practicum.commerce.interaction.api.interface_;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.commerce.interaction.api.dto.ChangeProductQuantityRequest;
-import ru.yandex.practicum.commerce.interaction.api.dto.ShoppingCartDto;
+import ru.yandex.practicum.commerce.interaction.api.dto.warehouse.ShoppingCartDto;
 import ru.yandex.practicum.commerce.interaction.api.exception.*;
 
 import java.util.List;

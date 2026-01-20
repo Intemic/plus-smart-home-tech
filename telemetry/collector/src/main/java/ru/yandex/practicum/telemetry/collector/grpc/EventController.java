@@ -9,7 +9,6 @@ import ru.yandex.practicum.grpc.telemetry.collector.CollectorControllerGrpc;
 import ru.yandex.practicum.telemetry.collector.grpc.handler.hub.HubEventHandler;
 import ru.yandex.practicum.telemetry.collector.grpc.handler.sensor.SensorEventHandler;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;

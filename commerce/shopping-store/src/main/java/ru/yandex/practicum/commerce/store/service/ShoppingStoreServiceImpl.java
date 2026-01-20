@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import ru.yandex.practicum.commerce.interaction.api.enum_.ProductCategory;
 import ru.yandex.practicum.commerce.interaction.api.enum_.ProductState;
 import ru.yandex.practicum.commerce.interaction.api.enum_.QuantityState;
 import ru.yandex.practicum.commerce.interaction.api.exception.NotFoundResource;
+import ru.yandex.practicum.commerce.interaction.api.logging.Loggable;
 import ru.yandex.practicum.commerce.store.mapper.ProductMapper;
 import ru.yandex.practicum.commerce.store.model.Product;
 import ru.yandex.practicum.commerce.store.storage.ShoppingStoreRepository;
@@ -28,8 +31,9 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     private final ObjectMapper objectMapper;
 
     @Override
+    @Loggable(msgBefore = "Выбор данных по категории :")
+    @Cacheable(cacheNames = "products")
     public Page<ProductDto> getProducts(ProductCategory category, Pageable pageable) {
-        log.info("Выбор данных по категории: %s".formatted(category));
         Page<ProductDto> page = repository
                 .findAllByProductCategory(category, pageable)
                 .map(ProductMapper::mapToDto);
@@ -41,8 +45,9 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     }
 
     @Override
+    @Loggable(msgBefore = "Поиск устройства: ")
+    @Cacheable(cacheNames = "products")
     public ProductDto getProduct(UUID productId) throws NotFoundResource {
-        log.info("Поиск устройства с id - %s".formatted(productId));
         Product product = repository.findById(productId)
                 .orElseThrow(() -> new NotFoundResource("Не найден продукт с id - %s".formatted(productId)));
         log.info("Данные продукта %s".formatted(convertToString(product)));
@@ -50,53 +55,47 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     }
 
     @Override
+    @Loggable(msgBefore = "Создание устройства", msgAfter = "Создано устройство")
     @Transactional
     public ProductDto createProduct(ProductDto productDto) {
-        log.info("Создание устройства data - %s".formatted(convertToString(productDto)));
         Product product = repository.save(ProductMapper.mapToProduct(productDto));
-        log.info("Создано устройство - %s".formatted(convertToString(product)));
         return ProductMapper.mapToDto(product);
     }
 
     @Override
+    @Loggable(msgBefore = "Обновление данных продукта:", msgAfter = "Обновленные данные: ")
     @Transactional
+    @CacheEvict(cacheNames = "products", allEntries = true)
     public ProductDto updateProduct(ProductDto product) throws NotFoundResource {
-        log.info("Обновление данных продукта новые данные: %s".formatted(convertToString(product)));
         Product productOld = repository.findById(product.getProductId())
                 .orElseThrow(() -> new NotFoundResource("Не найден продукт с id - %s"
                         .formatted(product.getProductId())));
-        log.info("Старые данные - %s".formatted(convertToString(productOld)));
         Product productUpdated = repository.save(ProductMapper.updateProduct(productOld, product));
-        log.info("Обновленные данные - %s".formatted(productUpdated));
         return ProductMapper.mapToDto(productUpdated);
     }
 
     @Override
+    @Loggable(msgBefore = "Удаление продукта", msgAfter = "Результат удаления продукта:")
     @Transactional
+    @CacheEvict(cacheNames = "products", allEntries = true)
     public boolean deleteProduct(UUID productId) throws NotFoundResource {
-        log.info("Удаление продукта - %s".formatted(productId));
-        if (repository.findById(productId).isPresent())
-            System.out.println("test");
         Product product = repository.findById(productId)
                 .orElseThrow(() -> new NotFoundResource("Не найден продукт с id - %s".formatted(productId)));
-        log.info("Данные продукта - %s".formatted(product));
         product.setProductState(ProductState.DEACTIVATE);
-        product = repository.save(product);
-        log.info("Обновленный продукт - %s".formatted(product));
+        repository.save(product);
         return true;
     }
 
     @Override
+    @Loggable(msgBefore =  "Изменение статуса товара", msgAfter = "Результат обновления статуса:")
     @Transactional
+    @CacheEvict(cacheNames = "products", allEntries = true)
     public boolean changeState(UUID productId, QuantityState quantityState) throws NotFoundResource {
-        log.info("Изменение статуса товара, новый статус - %s".formatted(quantityState));
         Product product = repository.findById(productId)
                 .orElseThrow(() -> new NotFoundResource("Не найден продукт с id - %s"
                         .formatted(productId)));
-        log.info("Данные до изменения - %s".formatted(convertToString(product)));
         product.setQuantityState(quantityState);
-        product = repository.save(product);
-        log.info("Обновленные данные - %s".formatted(convertToString(product)));
+        repository.save(product);
         return true;
     }
 

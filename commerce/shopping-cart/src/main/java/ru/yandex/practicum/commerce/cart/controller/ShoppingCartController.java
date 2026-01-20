@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.commerce.cart.service.ShoppingCartService;
 import ru.yandex.practicum.commerce.interaction.api.dto.ChangeProductQuantityRequest;
-import ru.yandex.practicum.commerce.interaction.api.dto.ShoppingCartDto;
+import ru.yandex.practicum.commerce.interaction.api.dto.warehouse.ShoppingCartDto;
 import ru.yandex.practicum.commerce.interaction.api.exception.NoProductsInShoppingCartException;
 import ru.yandex.practicum.commerce.interaction.api.exception.NotAuthorizedUserException;
 import ru.yandex.practicum.commerce.interaction.api.interface_.ShoppingCartOperation;
